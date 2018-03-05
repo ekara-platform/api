@@ -1,2 +1,8 @@
-# api
-REST API to interact with the Lagoon platform.
+# Lagoon API
+___
+
+
+## usage
+___
+
+> lagoonapi --logScript --logTime --port=3211
