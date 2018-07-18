@@ -1,13 +1,21 @@
-package main
+package api
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
 func TestGetInfo(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/infos/", nil)
-	resp := executeRequest(req)
+	initLog(true, true)
+	handler := http.HandlerFunc(getInfo)
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	resp, err := http.Get(server.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	checkResponseCode(t, http.StatusOK, resp)
 	if body := getNotEmptyBody(t, resp); body != "" {

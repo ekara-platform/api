@@ -1,4 +1,4 @@
-package main
+package api
 
 const (
 	API_CALLED_METHOD string = "API call %v, method %v"
@@ -13,8 +13,13 @@ const (
 	FLAG_PORT    string = "the running port of the app"
 
 	ENVIRONMENT_CREATED string = "Environment %s created"
-	LOGGER_INITIALIZED  string = "logger initialized"
-	TIME_REPORT         string = "execution of (%s:%d) took %s \n"
+
+	USER_LOGIN          string = "User %s logged, token %s"
+	USER_LOGOUT         string = "User logged out, token %s"
+	USER_LOGIN_REQUIRED string = "Login required"
+
+	LOGGER_INITIALIZED string = "logger initialized"
+	TIME_REPORT        string = "execution of (%s:%d) took %s \n"
 
 	ERROR_NO_BODY string = "Please send a request body"
 )

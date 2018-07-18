@@ -1,7 +1,6 @@
-package main
+package api
 
 import (
-	"flag"
 	"log"
 	"net/http"
 
@@ -19,7 +18,7 @@ var (
 	fPort       string
 )
 
-func main() {
+func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
 
 	// this comes from http://www.kammerl.de/ascii/AsciiSignature.php
 	// the font used id "standard"
@@ -36,31 +35,31 @@ func main() {
 	log.Println(` / ___ \|  __/| |                   `)
 	log.Println(`/_/   \_\_|  |___|                  `)
 
-	fScript := flag.Bool("logScript", false, FLAG_SCRIPT)
-	fTime := flag.Bool("logTime", false, FLAG_TIME)
-	flag.StringVar(&fPort, "port", "9999", FLAG_PORT)
-	flag.Parse()
+	//fScript := flag.Bool("logScript", false, FLAG_SCRIPT)
+	//fTime := flag.Bool("logTime", false, FLAG_TIME)
+	//flag.StringVar(&fPort, "port", "9999", FLAG_PORT)
+	//flag.Parse()
 
-	log.Printf(FLAGGED_WITH, "fScript", *fScript)
-	log.Printf(FLAGGED_WITH, "fTime", *fTime)
+	log.Printf(FLAGGED_WITH, "fScript", fScript)
+	log.Printf(FLAGGED_WITH, "fTime", fTime)
 	log.Printf(FLAGGED_WITH, "fPort", fPort)
 
-	initLog(*fScript, *fTime)
+	initLog(fScript, fTime)
 
 	application = App{}
-	application.Initialize()
-	application.Run()
+	application.initialize()
+	application.run()
 }
 
 // Initialize the application
-func (a *App) Initialize() {
+func (a *App) initialize() {
 	a.Router = NewRouter(routes)
 	a.Version = "V1.00"
 	a.Port = ":" + fPort
 }
 
 // Starts the application
-func (a *App) Run() {
+func (a *App) run() {
 	log.Printf(API_RUNNING_ON, a.Port)
 	log.Fatal(http.ListenAndServe(a.Port, a.Router))
 }

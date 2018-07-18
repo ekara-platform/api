@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"net/http"
@@ -57,4 +57,19 @@ func createParamMv(paramName string) Middleware {
 			h.ServeHTTP(w, r)
 		})
 	}
+}
+
+// The LoginMw middleware checks if the received token is valid or not
+func LoginMw(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := getToken(r)
+		// TODO Make a real test on the token valididty
+		if token == "1234" {
+			increaseTokenValidity(token)
+		} else {
+			http.Error(w, USER_LOGIN_REQUIRED, http.StatusUnauthorized)
+			return
+		}
+		h.ServeHTTP(w, r)
+	})
 }

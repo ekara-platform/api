@@ -1,57 +1,45 @@
-package main
+package api
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
-	"net/http/httptest"
-	"os"
+
 	"testing"
 )
 
-var a App
-
-func TestMain(m *testing.M) {
-	a = App{}
-
-	initLog(false, false)
-	a.Initialize()
-
-	code := m.Run()
-
-	os.Exit(code)
-}
-
 // checkResponseCode checks if the request response code
 // equals the expected one
-func checkResponseCode(t *testing.T, expected int, resp *httptest.ResponseRecorder) {
-	if expected != resp.Code {
-		t.Errorf("Expected response code %d. Got %d\n", expected, resp.Code)
+func checkResponseCode(t *testing.T, expected int, resp *http.Response) {
+	if expected != resp.StatusCode {
+		t.Errorf("Expected response code %d. Got %d\n", expected, resp.StatusCode)
 	}
-}
-
-// executeRequest executes the given request against
-// the application router
-func executeRequest(req *http.Request) *httptest.ResponseRecorder {
-	r := httptest.NewRecorder()
-	a.Router.ServeHTTP(r, req)
-	return r
 }
 
 // getNotEmptyBody returns the non empty body of the provided response
 // If the body is empty the test will result in a Errorf,
-func getNotEmptyBody(t *testing.T, resp *httptest.ResponseRecorder) string {
-	var body string
-	if body = resp.Body.String(); body == "" {
+func getNotEmptyBody(t *testing.T, resp *http.Response) string {
+	var body []byte
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(body) == "" {
 		t.Errorf("Expected an body. Got nothing")
 	}
-	return body
+	return string(body)
 }
 
 // checkEmptyBody checks if body of the provided response is empty
 // If the body is not empty the test will result in a Errorf,
-func checkEmptyBody(t *testing.T, resp *httptest.ResponseRecorder) {
-	if body := resp.Body.String(); body != "" {
-		t.Errorf("Expected an body. Got nothing")
+func checkEmptyBody(t *testing.T, resp *http.Response) {
+	var body []byte
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(body) > 0 {
+		t.Errorf("Expected nothing. Got something")
 	}
 }
 

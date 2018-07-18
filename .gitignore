@@ -17,4 +17,4 @@
 /vendor/
 
 # Application logs
-.log
+*.log
