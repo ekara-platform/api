@@ -35,11 +35,6 @@ func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
 	log.Println(` / ___ \|  __/| |                   `)
 	log.Println(`/_/   \_\_|  |___|                  `)
 
-	//fScript := flag.Bool("logScript", false, FLAG_SCRIPT)
-	//fTime := flag.Bool("logTime", false, FLAG_TIME)
-	//flag.StringVar(&fPort, "port", "9999", FLAG_PORT)
-	//flag.Parse()
-
 	log.Printf(FLAGGED_WITH, "fScript", fScript)
 	log.Printf(FLAGGED_WITH, "fTime", fTime)
 	log.Printf(FLAGGED_WITH, "fPort", fPort)
