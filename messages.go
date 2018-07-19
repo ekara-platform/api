@@ -8,9 +8,6 @@ const (
 	API_RUNNING_ON string = "API listening on port %s"
 
 	FLAGGED_WITH string = "flaged with %s : %v"
-	FLAG_SCRIPT  string = "log the api request as script"
-	FLAG_TIME    string = "log the execution time"
-	FLAG_PORT    string = "the running port of the app"
 
 	ENVIRONMENT_CREATED string = "Environment %s created"
 

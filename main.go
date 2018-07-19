@@ -15,7 +15,7 @@ type App struct {
 
 var (
 	application App
-	fPort       string
+	sPort       string
 )
 
 func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
@@ -44,6 +44,7 @@ func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
 	log.Printf(FLAGGED_WITH, "fTime", fTime)
 	log.Printf(FLAGGED_WITH, "fPort", fPort)
 
+	sPort = fPort
 	initLog(fScript, fTime)
 
 	application = App{}
@@ -55,7 +56,7 @@ func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
 func (a *App) initialize() {
 	a.Router = NewRouter(routes)
 	a.Version = "V1.00"
-	a.Port = ":" + fPort
+	a.Port = ":" + sPort
 }
 
 // Starts the application
