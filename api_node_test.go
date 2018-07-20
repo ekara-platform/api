@@ -1,13 +1,16 @@
 package api
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
 func TestGetNodes(t *testing.T) {
-	initLog(true, true)
+	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
+	initLog(false, false)
 	handler := http.HandlerFunc(getNodes)
 	server := httptest.NewServer(handler)
 	defer server.Close()
@@ -21,7 +24,8 @@ func TestGetNodes(t *testing.T) {
 }
 
 func TestGetNodeDetails(t *testing.T) {
-	initLog(true, true)
+	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
+	initLog(false, false)
 	handler := http.HandlerFunc(getNodeDetails)
 	server := httptest.NewServer(handler)
 	defer server.Close()

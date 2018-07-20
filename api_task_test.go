@@ -1,13 +1,16 @@
 package api
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
 func TestGetTasks(t *testing.T) {
-	initLog(true, true)
+	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
+	initLog(false, false)
 	handler := http.HandlerFunc(getTasks)
 	server := httptest.NewServer(handler)
 	defer server.Close()
@@ -22,7 +25,8 @@ func TestGetTasks(t *testing.T) {
 }
 
 func TestGetTaskDetails(t *testing.T) {
-	initLog(true, true)
+	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
+	initLog(false, false)
 	handler := http.HandlerFunc(getTaskDetails)
 	server := httptest.NewServer(handler)
 	defer server.Close()
@@ -37,7 +41,8 @@ func TestGetTaskDetails(t *testing.T) {
 }
 
 func TestLaunchTask(t *testing.T) {
-	initLog(true, true)
+	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
+	initLog(false, false)
 	handler := http.HandlerFunc(runTask)
 	server := httptest.NewServer(handler)
 	defer server.Close()

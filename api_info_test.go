@@ -1,13 +1,16 @@
 package api
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
 func TestGetInfo(t *testing.T) {
-	initLog(true, true)
+	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
+	initLog(false, false)
 	handler := http.HandlerFunc(getInfo)
 	server := httptest.NewServer(handler)
 	defer server.Close()

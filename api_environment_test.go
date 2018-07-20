@@ -1,13 +1,16 @@
 package api
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
 func TestGetEnvironment(t *testing.T) {
-	initLog(true, true)
+	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
+	initLog(false, false)
 	handler := http.HandlerFunc(getEnvironment)
 	server := httptest.NewServer(handler)
 	defer server.Close()
@@ -22,7 +25,8 @@ func TestGetEnvironment(t *testing.T) {
 }
 
 func TestDeleteEnvironment(t *testing.T) {
-	initLog(true, true)
+	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
+	initLog(false, false)
 	handler := http.HandlerFunc(deleteEnvironment)
 	server := httptest.NewServer(handler)
 	defer server.Close()
