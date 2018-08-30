@@ -22,4 +22,14 @@ var routes = Routes{
 
 	Route{"Node", http.MethodGet, "/nodes/", getNodes, chain(LogMw)},
 	Route{"Node", http.MethodGet, "/nodes/{id}", getNodeDetails, chain(LogMw, IdMw)},
+
+	Route{"Storage", http.MethodPost, "/storage/", saveValue, chain(LogMw, BodyMw)},
+	Route{"Storage", http.MethodPut, "/storage/", saveValue, chain(LogMw, BodyMw)},
+	Route{"Storage", http.MethodGet, "/storage/{id}", getValue, chain(LogMw, IdMw)},
+	Route{"Storage", http.MethodDelete, "/storage/{id}", deleteValue, chain(LogMw, IdMw)},
+
+	Route{"EnvironmentParam", http.MethodPost, "/envparam/", saveEnvironmentParam, chain(LogMw, BodyMw)},
+	Route{"EnvironmentParam", http.MethodPut, "/envparam/", saveEnvironmentParam, chain(LogMw, BodyMw)},
+	Route{"EnvironmentParam", http.MethodGet, "/envparam/", getEnvironmentParam, chain(LogMw, IdMw)},
+	Route{"EnvironmentParam", http.MethodDelete, "/envparam/", deleteEnvironmentParam, chain(LogMw, IdMw)},
 }

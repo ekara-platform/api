@@ -10,7 +10,10 @@ type ConsulStorage struct {
 
 func Storage() (ConsulStorage, error) {
 	r := &ConsulStorage{}
-	client, err := cApi.NewClient(cApi.DefaultConfig())
+	config := cApi.DefaultConfig()
+	config.Address = "consul:8500"
+
+	client, err := cApi.NewClient(config)
 	if err != nil {
 		return *r, err
 	}
@@ -35,23 +38,34 @@ func (r ConsulStorage) StoreString(key string, value string) error {
 
 func (r ConsulStorage) Get(key string) (bool, []byte, error) {
 	kv := r.client.KV()
-	pair, _, err := kv.Get("foo", nil)
+	pair, _, err := kv.Get(key, nil)
+
 	if err != nil {
 		return false, []byte(""), err
+	}
+	if pair == nil {
+		return false, []byte(""), nil
 	}
 	return true, pair.Value, nil
 }
 
 func (r ConsulStorage) Contains(key string) (bool, error) {
 	kv := r.client.KV()
-	pair, _, err := kv.Get("foo", nil)
+	pair, _, err := kv.Get(key, nil)
 	if err != nil {
 		return false, err
 	}
-	res := false
 	if pair != nil {
-		res = true
+		return true, nil
 	}
+	return false, nil
+}
 
-	return res, nil
+func (r ConsulStorage) Delete(key string) (bool, error) {
+	kv := r.client.KV()
+	_, err := kv.Delete(key, nil)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }

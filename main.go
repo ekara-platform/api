@@ -53,6 +53,7 @@ func (a *App) initialize() {
 	a.Router = NewRouter(routes)
 	a.Version = "V1.00"
 	a.Port = ":" + sPort
+
 }
 
 // Starts the application
