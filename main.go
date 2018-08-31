@@ -23,6 +23,7 @@ func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
 	logger = log
 	// this comes from http://www.kammerl.de/ascii/AsciiSignature.php
 	// the font used id "standard"
+	logger.Println(`                                    `)
 	logger.Println(` _                                  `)
 	logger.Println(`| |    __ _  __ _  ___   ___  _ __  `)
 	logger.Println(`| |   / _  |/ _  |/ _ \ / _ \| '_ \ `)
@@ -35,6 +36,8 @@ func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
 	logger.Println(`  / _ \ | |_) | |                   `)
 	logger.Println(` / ___ \|  __/| |                   `)
 	logger.Println(`/_/   \_\_|  |___|                  `)
+	logger.Println(`                                    `)
+	logger.Println(`                                    `)
 
 	logger.Printf(FLAGGED_WITH, "fScript", fScript)
 	logger.Printf(FLAGGED_WITH, "fTime", fTime)
