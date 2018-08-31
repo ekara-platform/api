@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -20,11 +21,24 @@ type EnvironmentLoadRequest struct {
 // manage by lagoon
 func getEnvironment(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
-	w.Header().Set("Content-Type", "application/json")
 
-	// TODO implement and change returned status
-	w.WriteHeader(http.StatusNotImplemented)
-	w.Write([]byte(""))
+	s := getStorage()
+	b, resultJSON, err := s.Get(KEY_STORE_ENVIRONMENT_JSON_CONTENT)
+	if err != nil {
+		// TODO make a proper error here
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !b {
+		err := fmt.Errorf("The environment cannot be found into the storage")
+		TLog.Printf(ERROR_CONTENT, err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(resultJSON)
+	w.WriteHeader(http.StatusOK)
 }
 
 // loadEnvironment loads the enviroment received as parameter
@@ -59,6 +73,11 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		p, err := parseParams(string(val))
+		if err != nil {
+			// TODO make a proper error here
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		TLog.Printf("Creating lagoon environment with parameter for templating")
 		lagoon, lagoonError = engine.Create(TLog, "/var/lib/lagoon", p)
 	} else {
@@ -67,7 +86,6 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if lagoonError == nil {
-		panic(lagoonError)
 		lagoonError = lagoon.Init(root, flavor) // FIXME: really need custom descriptor name ?
 	}
 
@@ -78,6 +96,7 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 			// TODO make a proper error here
 			http.Error(w, lagoonError.Error(), http.StatusInternalServerError)
 		} else {
+			// We are facing validation errors
 			TLog.Printf(lagoonError.Error())
 			b, e := vErrs.JSonContent()
 			if e != nil {
@@ -90,6 +109,21 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		TLog.Printf("Validation ok")
+	}
+
+	environmentJson, err := json.Marshal(lagoon.Environment())
+	if err != nil {
+		// TODO make a proper error here
+		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = s.Store(KEY_STORE_ENVIRONMENT_JSON_CONTENT, environmentJson)
+	if err != nil {
+		// TODO make a proper error here
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	err = s.StoreString(KEY_STORE_ENVIRONMENT_LOCATION, e.Location)
@@ -115,11 +149,30 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 // manage by lagoon
 func deleteEnvironment(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
-	w.Header().Set("Content-Type", "application/json")
 
-	// TODO implement and change returned status
+	s := getStorage()
+	_, err := s.Delete(KEY_STORE_ENVIRONMENT_JSON_CONTENT)
+	if err != nil {
+		// TODO make a proper error here
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	w.WriteHeader(http.StatusNotImplemented)
+	_, err = s.Delete(KEY_STORE_ENVIRONMENT_LOCATION)
+	if err != nil {
+		// TODO make a proper error here
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = s.Delete(KEY_STORE_ENVIRONMENT_UPLOAD_TIME)
+	if err != nil {
+		// TODO make a proper error here
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(""))
 }
 
