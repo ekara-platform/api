@@ -11,6 +11,7 @@ type ApiInfo struct {
 	EnvironmentLocation string
 	EnvironmentTime     string
 	EnvironmentParam    string
+	EnvironmentJSON     string
 	Err                 string
 }
 
@@ -43,6 +44,12 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 		info.EnvironmentParam = err.Error()
 	}
 	info.EnvironmentParam = string(val)
+
+	_, val, err = storage.Get(KEY_STORE_ENVIRONMENT_JSON_CONTENT)
+	if err != nil {
+		info.EnvironmentJSON = err.Error()
+	}
+	info.EnvironmentJSON = string(val)
 
 	infoJSON, err := json.Marshal(info)
 	if err != nil {
