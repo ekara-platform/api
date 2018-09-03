@@ -45,6 +45,9 @@ func saveEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	// TODO Refresh the environment if present
+
 	TResult.Printf(VALUE_STORED, KEY_STORE_ENVIRONMENT_PARAM_CONTENT, string(b))
 	w.WriteHeader(http.StatusCreated)
 }

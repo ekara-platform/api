@@ -14,7 +14,10 @@ var routes = Routes{
 
 	Route{"Environment", http.MethodGet, "/environment/", getEnvironment, chain(LogMw)},
 	Route{"Environment", http.MethodPost, "/environment/", loadEnvironment, chain(LogMw, BodyMw)},
+	Route{"Environment", http.MethodPut, "/environment/", updateEnvironment, chain(LogMw, BodyMw)},
 	Route{"Environment", http.MethodDelete, "/environment/", deleteEnvironment, chain(LogMw)},
+
+	Route{"EnvironmentCheck", http.MethodPost, "/check/", checkEnvironment, chain(LogMw, BodyMw)},
 
 	Route{"Task", http.MethodGet, "/tasks/", getTasks, chain(LogMw)},
 	Route{"Task", http.MethodGet, "/tasks/{id}", getTaskDetails, chain(LogMw, IdMw)},

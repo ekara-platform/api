@@ -10,6 +10,7 @@ const (
 	FLAGGED_WITH string = "flaged with %s : %v"
 
 	ENVIRONMENT_CREATED string = "Environment %s created"
+	ENVIRONMENT_UPDATED string = "Environment %s updated"
 
 	USER_LOGIN          string = "User %s logged, token %s"
 	USER_LOGOUT         string = "User logged out, token %s"
@@ -19,7 +20,7 @@ const (
 	TIME_REPORT        string = "execution of (%s:%d) took %s \n"
 
 	ERROR_NO_BODY string = "Please send a request body"
-	ERROR_CONTENT string = "An error occured %s"
+	ERROR_CONTENT string = "An error occured %s, : %s"
 
 	VALUE_STORED  string = "Value %s:%s has been stored"
 	VALUE_DELETED string = "Value %s:%s has been deleted"
