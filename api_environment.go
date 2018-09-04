@@ -19,7 +19,9 @@ type EnvironmentLoadRequest struct {
 
 // getEnvironment returns the details enviroment currently
 // manage by lagoon
-
+// Acceptable Content type are :
+// - "application/json"
+// - "application/x.yaml"
 func getEnvironment(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
@@ -34,6 +36,7 @@ func getEnvironment(w http.ResponseWriter, r *http.Request) {
 		b, result, err = s.Get(KEY_STORE_ENVIRONMENT_YAML_CONTENT)
 		contentType = MimeTypeYAML
 	} else {
+		// Returns JSON by default
 		b, result, err = s.Get(KEY_STORE_ENVIRONMENT_JSON_CONTENT)
 		contentType = MimeTypeJSON
 	}
@@ -45,7 +48,7 @@ func getEnvironment(w http.ResponseWriter, r *http.Request) {
 	}
 	if !b {
 		err := fmt.Errorf("The environment cannot be found into the storage")
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

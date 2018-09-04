@@ -23,5 +23,5 @@ const (
 	ERROR_CONTENT string = "An error occured %s: %s"
 
 	VALUE_STORED  string = "Value %s:%s has been stored"
-	VALUE_DELETED string = "Value %s:%s has been deleted"
+	VALUE_DELETED string = "Value %s has been deleted"
 )

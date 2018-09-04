@@ -86,21 +86,21 @@ func deleteValue(w http.ResponseWriter, r *http.Request) {
 
 	b, err := s.Contains(id)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "Deleting a key", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if !b {
 		err := fmt.Errorf("The key \"%s\" cannot be found", id)
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "Getting a key", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	b, err = getStorage().Delete(id)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "Deleting a key", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
