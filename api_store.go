@@ -23,14 +23,14 @@ func getValue(w http.ResponseWriter, r *http.Request) {
 
 	b, val, err := getStorage().Get(id)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if !b {
 		err := fmt.Errorf("The key \"%s\" cannot be found", id)
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -42,13 +42,13 @@ func getValue(w http.ResponseWriter, r *http.Request) {
 
 	resultJSON, err := json.Marshal(result)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 
 	}
 	TResult.Print(string(resultJSON))
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", MimeTypeJSON)
 	w.Write(resultJSON)
 	w.WriteHeader(http.StatusOK)
 }
@@ -60,13 +60,13 @@ func saveValue(w http.ResponseWriter, r *http.Request) {
 	var req StorePostRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	err = getStorage().StoreString(req.Key, req.Value)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

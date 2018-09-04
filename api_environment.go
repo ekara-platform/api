@@ -19,11 +19,25 @@ type EnvironmentLoadRequest struct {
 
 // getEnvironment returns the details enviroment currently
 // manage by lagoon
+
 func getEnvironment(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
+	contentType := r.Header.Get("Content-type")
 	s := getStorage()
-	b, resultJSON, err := s.Get(KEY_STORE_ENVIRONMENT_JSON_CONTENT)
+
+	var b bool
+	var result []byte
+	var err error
+
+	if contentType == MimeTypeYAML {
+		b, result, err = s.Get(KEY_STORE_ENVIRONMENT_YAML_CONTENT)
+		contentType = MimeTypeYAML
+	} else {
+		b, result, err = s.Get(KEY_STORE_ENVIRONMENT_JSON_CONTENT)
+		contentType = MimeTypeJSON
+	}
+
 	if err != nil {
 		// TODO make a proper error here
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -36,10 +50,9 @@ func getEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", contentType)
 	w.WriteHeader(http.StatusOK)
-	w.Write(resultJSON)
-
+	w.Write(result)
 }
 
 func validate(e EnvironmentLoadRequest) (lagoon engine.Lagoon, err error, vErrs model.ValidationErrors) {
@@ -123,7 +136,7 @@ func checkEnvironment(w http.ResponseWriter, r *http.Request) {
 		}
 		// Return both errors and warnings
 		TLog.Printf(string(b))
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", MimeTypeJSON)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(b)
 		return
@@ -164,7 +177,7 @@ func updateEnvironment(w http.ResponseWriter, r *http.Request) {
 		}
 		// Return both errors and warnings
 		TLog.Printf(string(b))
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", MimeTypeJSON)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(b)
 		return
@@ -184,8 +197,22 @@ func updateEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	environmentYaml, err := yaml.Marshal(lagoon.Environment())
+	if err != nil {
+		http.Error(
+			w,
+			fmt.Errorf(ERROR_CONTENT, "marshalling the environment Yaml content:", err.Error()).Error(),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
 	s := getStorage()
 	if b := storeEnvironmentJSONContent(s, w, environmentJson); b {
+		return
+	}
+
+	if b := storeEnvironmentYAMLContent(s, w, environmentYaml); b {
 		return
 	}
 
@@ -228,7 +255,7 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 		}
 		// Return both errors and warnings
 		TLog.Printf(string(b))
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", MimeTypeJSON)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(b)
 		return
@@ -249,8 +276,22 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	environmentYaml, err := yaml.Marshal(lagoon.Environment())
+	if err != nil {
+		http.Error(
+			w,
+			fmt.Errorf(ERROR_CONTENT, "marshalling the environment Yaml content:", err.Error()).Error(),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
 	s := getStorage()
 	if b := storeEnvironmentJSONContent(s, w, environmentJson); b {
+		return
+	}
+
+	if b := storeEnvironmentYAMLContent(s, w, environmentYaml); b {
 		return
 	}
 
@@ -262,6 +303,19 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 
 	TResult.Printf(ENVIRONMENT_CREATED, e.Location)
 	w.WriteHeader(http.StatusCreated)
+	return
+}
+
+func storeEnvironmentYAMLContent(s Storage, w http.ResponseWriter, content []byte) (shouldReturn bool) {
+	err := s.Store(KEY_STORE_ENVIRONMENT_YAML_CONTENT, content)
+	if err != nil {
+		http.Error(
+			w,
+			fmt.Errorf(ERROR_CONTENT, "Storing the environment YAML content:", err.Error()).Error(),
+			http.StatusInternalServerError,
+		)
+		shouldReturn = true
+	}
 	return
 }
 

@@ -11,20 +11,20 @@ func getEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 
 	b, val, err := getStorage().Get(KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if !b {
 		err := fmt.Errorf("The key \"%s\" cannot be found", KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	TResult.Print(string(val))
-	w.Header().Set("Content-Type", "application/yaml")
+	w.Header().Set("Content-Type", MimeTypeYAML)
 	w.Write(val)
 	w.WriteHeader(http.StatusOK)
 }
@@ -34,14 +34,14 @@ func saveEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	err = getStorage().Store(KEY_STORE_ENVIRONMENT_PARAM_CONTENT, b)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -59,21 +59,21 @@ func deleteEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 
 	b, err := s.Contains(KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if !b {
 		err := fmt.Errorf("The key \"%s\" cannot be found", KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	b, err = getStorage().Delete(KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
 	if err != nil {
-		TLog.Printf(ERROR_CONTENT, err.Error())
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -20,7 +20,7 @@ const (
 	TIME_REPORT        string = "execution of (%s:%d) took %s \n"
 
 	ERROR_NO_BODY string = "Please send a request body"
-	ERROR_CONTENT string = "An error occured %s, : %s"
+	ERROR_CONTENT string = "An error occured %s: %s"
 
 	VALUE_STORED  string = "Value %s:%s has been stored"
 	VALUE_DELETED string = "Value %s:%s has been deleted"

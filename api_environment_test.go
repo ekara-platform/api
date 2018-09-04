@@ -20,8 +20,8 @@ func TestGetEnvironment(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	checkResponseCode(t, http.StatusNotImplemented, resp)
-	checkEmptyBody(t, resp)
+	checkResponseCode(t, http.StatusInternalServerError, resp)
+	//checkEmptyBody(t, resp)
 }
 
 func TestDeleteEnvironment(t *testing.T) {
@@ -36,6 +36,6 @@ func TestDeleteEnvironment(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	checkResponseCode(t, http.StatusNotImplemented, resp)
-	checkEmptyBody(t, resp)
+	checkResponseCode(t, http.StatusInternalServerError, resp)
+	//checkEmptyBody(t, resp)
 }

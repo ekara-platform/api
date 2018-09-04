@@ -6,6 +6,7 @@ import (
 
 const (
 	KEY_STORE_ENVIRONMENT_LOCATION      string = "environment_location"
+	KEY_STORE_ENVIRONMENT_YAML_CONTENT  string = "environment_yaml_content"
 	KEY_STORE_ENVIRONMENT_JSON_CONTENT  string = "environment_json_content"
 	KEY_STORE_ENVIRONMENT_UPLOAD_TIME   string = "environment_upload_time"
 	KEY_STORE_ENVIRONMENT_PARAM_CONTENT string = "environment_param_content"

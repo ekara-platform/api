@@ -12,13 +12,14 @@ type ApiInfo struct {
 	EnvironmentTime     string
 	EnvironmentParam    string
 	EnvironmentJSON     string
+	EnvironmentYAML     string
 	Err                 string
 }
 
 // getInfo returns the application detailed informations
 func getInfo(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", MimeTypeJSON)
 
 	storage := getStorage()
 
@@ -50,6 +51,12 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 		info.EnvironmentJSON = err.Error()
 	}
 	info.EnvironmentJSON = string(val)
+
+	_, val, err = storage.Get(KEY_STORE_ENVIRONMENT_YAML_CONTENT)
+	if err != nil {
+		info.EnvironmentYAML = err.Error()
+	}
+	info.EnvironmentYAML = string(val)
 
 	infoJSON, err := json.Marshal(info)
 	if err != nil {

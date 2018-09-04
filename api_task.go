@@ -8,7 +8,7 @@ import (
 // getTasks returns the tasks available into the environment
 func getTasks(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", MimeTypeJSON)
 
 	// TODO implement and change returned status
 	w.WriteHeader(http.StatusNotImplemented)
@@ -19,7 +19,7 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 // to the id received as parameter
 func getTaskDetails(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", MimeTypeJSON)
 
 	// TODO implement and change returned status
 	w.WriteHeader(http.StatusNotImplemented)
@@ -30,7 +30,7 @@ func getTaskDetails(w http.ResponseWriter, r *http.Request) {
 // to the id received as parameter
 func runTask(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", MimeTypeJSON)
 
 	// TODO implement and change returned status
 	w.WriteHeader(http.StatusNotImplemented)

@@ -8,7 +8,7 @@ import (
 // getNodes returns the nodes available into the environment
 func getNodes(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", MimeTypeJSON)
 
 	// TODO implement and change returned status
 	w.WriteHeader(http.StatusNotImplemented)
@@ -19,7 +19,7 @@ func getNodes(w http.ResponseWriter, r *http.Request) {
 // to the id received as parameter
 func getNodeDetails(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", MimeTypeJSON)
 
 	// TODO implement and change returned status
 	w.WriteHeader(http.StatusNotImplemented)
