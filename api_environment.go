@@ -33,11 +33,11 @@ func getEnvironment(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	if contentType == MimeTypeYAML {
-		b, result, err = s.Get(KEY_STORE_ENVIRONMENT_YAML_CONTENT)
+		b, result, err = s.Get(KEY_STORE_ENV_YAML)
 		contentType = MimeTypeYAML
 	} else {
 		// Returns JSON by default
-		b, result, err = s.Get(KEY_STORE_ENVIRONMENT_JSON_CONTENT)
+		b, result, err = s.Get(KEY_STORE_ENV_JSON)
 		contentType = MimeTypeJSON
 	}
 
@@ -61,7 +61,7 @@ func getEnvironment(w http.ResponseWriter, r *http.Request) {
 func validate(e EnvironmentLoadRequest) (lagoon engine.Lagoon, err error, vErrs model.ValidationErrors) {
 	root, flavor := repositoryFlavor(e.Location)
 	s := getStorage()
-	b, err := s.Contains(KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
+	b, err := s.Contains(KEY_STORE_ENV_PARAM)
 	if err != nil {
 		// TODO make a proper error here
 		return
@@ -70,7 +70,7 @@ func validate(e EnvironmentLoadRequest) (lagoon engine.Lagoon, err error, vErrs 
 	var lagoonError error
 	if b {
 		var val []byte
-		_, val, err = s.Get(KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
+		_, val, err = s.Get(KEY_STORE_ENV_PARAM)
 		if err != nil {
 			// TODO make a proper error here
 			return
@@ -222,7 +222,7 @@ func updateEnvironment(w http.ResponseWriter, r *http.Request) {
 	if b := storeEnvironmentLocation(s, w, e.Location); b {
 		return
 	}
-	storeEnvironmentTime(s, w)
+	storeEnvironmentTime(KEY_STORE_ENV_UPDATED_AT, s, w)
 
 	TResult.Printf(ENVIRONMENT_UPDATED, e.Location)
 	w.WriteHeader(http.StatusCreated)
@@ -302,7 +302,7 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	storeEnvironmentTime(s, w)
+	storeEnvironmentTime(KEY_STORE_ENV_CREATED_AT, s, w)
 
 	TResult.Printf(ENVIRONMENT_CREATED, e.Location)
 	w.WriteHeader(http.StatusCreated)
@@ -310,7 +310,7 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 }
 
 func storeEnvironmentYAMLContent(s Storage, w http.ResponseWriter, content []byte) (shouldReturn bool) {
-	err := s.Store(KEY_STORE_ENVIRONMENT_YAML_CONTENT, content)
+	err := s.Store(KEY_STORE_ENV_YAML, content)
 	if err != nil {
 		http.Error(
 			w,
@@ -323,7 +323,7 @@ func storeEnvironmentYAMLContent(s Storage, w http.ResponseWriter, content []byt
 }
 
 func storeEnvironmentJSONContent(s Storage, w http.ResponseWriter, content []byte) (shouldReturn bool) {
-	err := s.Store(KEY_STORE_ENVIRONMENT_JSON_CONTENT, content)
+	err := s.Store(KEY_STORE_ENV_JSON, content)
 	if err != nil {
 		http.Error(
 			w,
@@ -336,7 +336,7 @@ func storeEnvironmentJSONContent(s Storage, w http.ResponseWriter, content []byt
 }
 
 func storeEnvironmentLocation(s Storage, w http.ResponseWriter, location string) (shouldReturn bool) {
-	err := s.StoreString(KEY_STORE_ENVIRONMENT_LOCATION, location)
+	err := s.StoreString(KEY_STORE_ENV_LOCATION, location)
 	if err != nil {
 		http.Error(
 			w,
@@ -348,13 +348,14 @@ func storeEnvironmentLocation(s Storage, w http.ResponseWriter, location string)
 	return
 }
 
-func storeEnvironmentTime(s Storage, w http.ResponseWriter) (shouldReturn bool) {
+func storeEnvironmentTime(key string, s Storage, w http.ResponseWriter) (shouldReturn bool) {
 	t := time.Now()
-	err := s.StoreString(KEY_STORE_ENVIRONMENT_UPLOAD_TIME, t.Format("20060102150405"))
+	const layout = "Jan 2, 2006 at 3:04pm (MST)"
+	err := s.StoreString(key, t.Format(layout))
 	if err != nil {
 		http.Error(
 			w,
-			fmt.Errorf(ERROR_CONTENT, "Storing the environment upload time:", err.Error()).Error(),
+			fmt.Errorf(ERROR_CONTENT, "Storing "+key, err.Error()).Error(),
 			http.StatusInternalServerError,
 		)
 		shouldReturn = true
@@ -368,7 +369,7 @@ func deleteEnvironment(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
 	s := getStorage()
-	_, err := s.Delete(KEY_STORE_ENVIRONMENT_JSON_CONTENT)
+	_, err := s.Delete(KEY_STORE_ENV_JSON)
 	if err != nil {
 		http.Error(
 			w,
@@ -378,7 +379,7 @@ func deleteEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = s.Delete(KEY_STORE_ENVIRONMENT_LOCATION)
+	_, err = s.Delete(KEY_STORE_ENV_LOCATION)
 	if err != nil {
 		http.Error(
 			w,
@@ -388,11 +389,21 @@ func deleteEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = s.Delete(KEY_STORE_ENVIRONMENT_UPLOAD_TIME)
+	_, err = s.Delete(KEY_STORE_ENV_CREATED_AT)
 	if err != nil {
 		http.Error(
 			w,
-			fmt.Errorf(ERROR_CONTENT, "Deleting the environment upload time:", err.Error()).Error(),
+			fmt.Errorf(ERROR_CONTENT, "Deleting the environment creation time:", err.Error()).Error(),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	_, err = s.Delete(KEY_STORE_ENV_UPDATED_AT)
+	if err != nil {
+		http.Error(
+			w,
+			fmt.Errorf(ERROR_CONTENT, "Deleting the environment update time:", err.Error()).Error(),
 			http.StatusInternalServerError,
 		)
 		return

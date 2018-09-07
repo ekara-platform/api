@@ -49,8 +49,32 @@ func getValue(w http.ResponseWriter, r *http.Request) {
 	}
 	TResult.Print(string(resultJSON))
 	w.Header().Set("Content-Type", MimeTypeJSON)
-	w.Write(resultJSON)
 	w.WriteHeader(http.StatusOK)
+	w.Write(resultJSON)
+}
+
+// getKeys returns the list of keys stored
+func getKeys(w http.ResponseWriter, r *http.Request) {
+	defer traceTime(here())()
+
+	val, err := getStorage().Keys()
+	if err != nil {
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	resultJSON, err := json.Marshal(val)
+	if err != nil {
+		TLog.Printf(ERROR_CONTENT, "", err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+
+	}
+	TResult.Print(string(resultJSON))
+	w.Header().Set("Content-Type", MimeTypeJSON)
+	w.WriteHeader(http.StatusOK)
+	w.Write(resultJSON)
 }
 
 // saveValue save into the storage the key value received as parameter

@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -9,6 +10,15 @@ import (
 )
 
 type Routes []Route
+
+func (r Routes) route(name string) (Route, error) {
+	for _, v := range r {
+		if v.Name == name {
+			return v, nil
+		}
+	}
+	return Route{}, fmt.Errorf("The requested route \"%s\" is missing", name)
+}
 
 type Route struct {
 	Name        string

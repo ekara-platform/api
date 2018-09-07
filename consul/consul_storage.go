@@ -69,3 +69,12 @@ func (r ConsulStorage) Delete(key string) (bool, error) {
 	}
 	return true, nil
 }
+
+func (r ConsulStorage) Keys() ([]string, error) {
+	kv := r.client.KV()
+	strs, _, err := kv.Keys("", "", nil)
+	if err != nil {
+		return []string{}, err
+	}
+	return strs, nil
+}

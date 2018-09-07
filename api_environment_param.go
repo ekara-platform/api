@@ -9,7 +9,7 @@ import (
 func getEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
-	b, val, err := getStorage().Get(KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
+	b, val, err := getStorage().Get(KEY_STORE_ENV_PARAM)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -17,7 +17,7 @@ func getEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !b {
-		err := fmt.Errorf("The key \"%s\" cannot be found", KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
+		err := fmt.Errorf("The key \"%s\" cannot be found", KEY_STORE_ENV_PARAM)
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -39,7 +39,7 @@ func saveEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = getStorage().Store(KEY_STORE_ENVIRONMENT_PARAM_CONTENT, b)
+	err = getStorage().Store(KEY_STORE_ENV_PARAM, b)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -48,7 +48,7 @@ func saveEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 
 	// TODO Refresh the environment if present
 
-	TResult.Printf(VALUE_STORED, KEY_STORE_ENVIRONMENT_PARAM_CONTENT, string(b))
+	TResult.Printf(VALUE_STORED, KEY_STORE_ENV_PARAM, string(b))
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -57,7 +57,7 @@ func deleteEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 
 	s := getStorage()
 
-	b, err := s.Contains(KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
+	b, err := s.Contains(KEY_STORE_ENV_PARAM)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -65,13 +65,13 @@ func deleteEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !b {
-		err := fmt.Errorf("The key \"%s\" cannot be found", KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
+		err := fmt.Errorf("The key \"%s\" cannot be found", KEY_STORE_ENV_PARAM)
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	b, err = getStorage().Delete(KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
+	b, err = getStorage().Delete(KEY_STORE_ENV_PARAM)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -79,7 +79,7 @@ func deleteEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if b {
-		TResult.Printf(VALUE_DELETED, KEY_STORE_ENVIRONMENT_PARAM_CONTENT)
+		TResult.Printf(VALUE_DELETED, KEY_STORE_ENV_PARAM)
 	}
 	w.WriteHeader(http.StatusOK)
 }
