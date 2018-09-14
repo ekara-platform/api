@@ -60,6 +60,7 @@ func createParamMv(paramName string) Middleware {
 }
 
 // The LoginMw middleware checks if the received token is valid or not
+/*
 func LoginMw(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := getToken(r)
@@ -73,3 +74,4 @@ func LoginMw(h http.Handler) http.Handler {
 		h.ServeHTTP(w, r)
 	})
 }
+*/
