@@ -2,10 +2,64 @@
 
 
 [[projects]]
+  name = "docker.io/go-docker"
+  packages = [
+    ".",
+    "api",
+    "api/types",
+    "api/types/blkiodev",
+    "api/types/container",
+    "api/types/events",
+    "api/types/filters",
+    "api/types/image",
+    "api/types/mount",
+    "api/types/network",
+    "api/types/registry",
+    "api/types/strslice",
+    "api/types/swarm",
+    "api/types/swarm/runtime",
+    "api/types/time",
+    "api/types/versions",
+    "api/types/volume"
+  ]
+  revision = "b3f5b5de7bbce0acc6a7fc0a4c2b88db678e262e"
+  version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/Microsoft/go-winio"
+  packages = ["."]
+  revision = "97e4973ce50b2ff5f09635a57e2b88a037aae829"
+  version = "v0.4.11"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
   version = "v1.1.1"
+
+[[projects]]
+  name = "github.com/docker/distribution"
+  packages = [
+    "digestset",
+    "reference"
+  ]
+  revision = "edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c"
+
+[[projects]]
+  name = "github.com/docker/go-connections"
+  packages = [
+    "nat",
+    "sockets",
+    "tlsconfig"
+  ]
+  revision = "3ede32e2033de7505e6500d6c868c2b9ed9f169d"
+  version = "v0.3.0"
+
+[[projects]]
+  name = "github.com/docker/go-units"
+  packages = ["."]
+  revision = "47565b4f722fb6ceae66b95f853feed578a4a51c"
+  version = "v0.3.3"
 
 [[projects]]
   name = "github.com/emirpasic/gods"
@@ -19,6 +73,12 @@
   ]
   revision = "f6c17b524822278a87e3b3bd809fec33b51f5b46"
   version = "v1.9.0"
+
+[[projects]]
+  name = "github.com/gogo/protobuf"
+  packages = ["proto"]
+  revision = "100ba4e885062801d56799d78530b73b178a78f3"
+  version = "v0.4"
 
 [[projects]]
   name = "github.com/gorilla/context"
@@ -99,10 +159,31 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/opencontainers/go-digest"
+  packages = ["."]
+  revision = "279bed98673dd5bef374d3b6e4b09e2af76183bf"
+  version = "v1.0.0-rc1"
+
+[[projects]]
+  name = "github.com/opencontainers/image-spec"
+  packages = [
+    "specs-go",
+    "specs-go/v1"
+  ]
+  revision = "d60099175f88c47cd379c4738d158884749ed235"
+  version = "v1.0.1"
+
+[[projects]]
   name = "github.com/pelletier/go-buffruneio"
   packages = ["."]
   revision = "c37440a7cf42ac63b919c752ca73a85067e05992"
   version = "v0.2.0"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -165,7 +246,12 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context"]
+  packages = [
+    "context",
+    "context/ctxhttp",
+    "internal/socks",
+    "proxy"
+  ]
   revision = "161cd47e91fd58ac17490ef4d742dc98bb4cf60e"
 
 [[projects]]
@@ -267,6 +353,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e12a4ec87803b5d8debaf9dd9fcf7323e0867b7ed88098f6a81bcb7ae801b996"
+  inputs-digest = "bf2ecff10b60068aa3c3b1419ae7b23e74f3574288d226ec969199c49c1f16c7"
   solver-name = "gps-cdcl"
   solver-version = 1

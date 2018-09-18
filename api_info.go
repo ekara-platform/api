@@ -6,9 +6,15 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/lagoon-platform/api/docker"
+
 	"net/http"
 	"net/url"
 	"os"
+)
+
+const (
+	STR string = "C:\\Users\\e518546\\.docker\\machine\\certs"
 )
 
 type ApiInfo struct {
@@ -87,6 +93,9 @@ func (d *EnvironmentDetails) addStoredLongContent(s Storage, key string, route s
 // getInfo returns the application detailed informations
 func getInfo(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
+
+	TLog.Println("Calling The docker stuff...")
+	docker.TestDocker(TLog, "tcp://192.168.99.100:2376", "1.30", STR)
 
 	w.Header().Set("Content-Type", MimeTypeJSON)
 
