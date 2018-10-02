@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/lagoon-platform/api/docker"
+	"github.com/lagoon-platform/api/storage"
 
 	"net/http"
 	"net/url"
@@ -47,7 +48,7 @@ func (r EnvironmentDetails) MarshalJSON() ([]byte, error) {
 	return json.Marshal(t)
 }
 
-func (d *EnvironmentDetails) addStoredShortContent(s Storage, key string) {
+func (d *EnvironmentDetails) addStoredShortContent(s storage.Storage, key string) {
 	b, val, err := s.Get(key)
 	if err != nil {
 		d.storedShortContent[key] = err.Error()
@@ -58,7 +59,7 @@ func (d *EnvironmentDetails) addStoredShortContent(s Storage, key string) {
 	}
 }
 
-func (d *EnvironmentDetails) addStoredLongContent(s Storage, key string, route string) {
+func (d *EnvironmentDetails) addStoredLongContent(s storage.Storage, key string, route string) {
 	if b, _ := s.Contains(key); b {
 		r := application.Router.Get(route)
 
@@ -86,7 +87,7 @@ func (d *EnvironmentDetails) addStoredLongContent(s Storage, key string, route s
 				panic(e)
 			}
 		}
-		d.storedLongContent[removeLagoonPrefix(key)] = string(url.String())
+		d.storedLongContent[storage.RemoveLagoonPrefix(key)] = string(url.String())
 	}
 }
 
@@ -99,7 +100,7 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", MimeTypeJSON)
 
-	s := getStorage()
+	s := usedStorage
 
 	info := ApiInfo{
 		Version: application.Version,
@@ -117,13 +118,13 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	info.Host = name
 	d := info.EnvironmentDetails
-	d.addStoredShortContent(s, KEY_STORE_ENV_LOCATION)
-	d.addStoredShortContent(s, KEY_STORE_ENV_CREATED_AT)
-	d.addStoredShortContent(s, KEY_STORE_ENV_UPDATED_AT)
+	d.addStoredShortContent(s, storage.KEY_STORE_ENV_LOCATION)
+	d.addStoredShortContent(s, storage.KEY_STORE_ENV_CREATED_AT)
+	d.addStoredShortContent(s, storage.KEY_STORE_ENV_UPDATED_AT)
 
-	d.addStoredLongContent(s, KEY_STORE_ENV_PARAM, "GetEnvironmentParam")
-	d.addStoredLongContent(s, KEY_STORE_ENV_JSON, "GetStorage")
-	d.addStoredLongContent(s, KEY_STORE_ENV_YAML, "GetStorage")
+	d.addStoredLongContent(s, storage.KEY_STORE_ENV_PARAM, "GetEnvironmentParam")
+	d.addStoredLongContent(s, storage.KEY_STORE_ENV_JSON, "GetStorage")
+	d.addStoredLongContent(s, storage.KEY_STORE_ENV_YAML, "GetStorage")
 
 	infoJSON, err := json.Marshal(info)
 	if err != nil {

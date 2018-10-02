@@ -21,7 +21,7 @@ func getValue(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	b, val, err := getStorage().Get(id)
+	b, val, err := usedStorage.Get(id)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -57,7 +57,7 @@ func getValue(w http.ResponseWriter, r *http.Request) {
 func getKeys(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
-	val, err := getStorage().Keys()
+	val, err := usedStorage.Keys()
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -88,7 +88,7 @@ func saveValue(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = getStorage().StoreString(req.Key, req.Value)
+	err = usedStorage.StoreString(req.Key, req.Value)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -106,7 +106,7 @@ func deleteValue(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	s := getStorage()
+	s := usedStorage
 
 	b, err := s.Contains(id)
 	if err != nil {
@@ -122,7 +122,7 @@ func deleteValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err = getStorage().Delete(id)
+	b, err = usedStorage.Delete(id)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "Deleting a key", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)

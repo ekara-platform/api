@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/lagoon-platform/api/storage"
 )
 
 type App struct {
@@ -17,6 +18,7 @@ var (
 	application App
 	sPort       string
 	logger      log.Logger
+	usedStorage storage.Storage
 )
 
 func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
@@ -61,6 +63,7 @@ func (a *App) initialize() {
 
 // Starts the application
 func (a *App) run() {
+	usedStorage = storage.GetConsulStorage()
 	logger.Printf(API_RUNNING_ON, a.Port)
 	logger.Fatal(http.ListenAndServe(a.Port, a.Router))
 }

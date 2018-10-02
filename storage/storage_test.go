@@ -1,4 +1,4 @@
-package api
+package storage
 
 import (
 	"testing"

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"testing"
 )
@@ -40,6 +41,25 @@ func checkEmptyBody(t *testing.T, resp *http.Response) {
 	}
 	if len(body) > 0 {
 		t.Errorf("Expected nothing. Got something")
+	}
+}
+
+func checkBody(t *testing.T, resp *http.Response, expected []byte) {
+	var body []byte
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(body) == 0 {
+		t.Errorf("Expected something. Got nothing")
+	} else {
+		eStr := strings.Trim(string(expected), " ")
+		bStr := strings.Trim(string(body), " ")
+		bStr = strings.Trim(string(bStr), "\t")
+
+		if eStr != bStr {
+			t.Errorf("Expected : \"%s\". Got : \"%s\"", expected, body)
+		}
 	}
 }
 

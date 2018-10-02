@@ -37,4 +37,9 @@ var routes = Routes{
 	Route{"PutEnvironmentParam", http.MethodPut, "/envparam/", saveEnvironmentParam, chain(LogMw, BodyMw)},
 	Route{"GetEnvironmentParam", http.MethodGet, "/envparam/", getEnvironmentParam, chain(LogMw, IdMw)},
 	Route{"DeleteEnvironmentParam", http.MethodDelete, "/envparam/", deleteEnvironmentParam, chain(LogMw, IdMw)},
+
+	Route{"PostEnvironmentSession", http.MethodPost, "/envsession/", saveEnvironmentSession, chain(LogMw, BodyMw)},
+	Route{"PutEnvironmentSession", http.MethodPut, "/envsession/", saveEnvironmentSession, chain(LogMw, BodyMw)},
+	Route{"GetEnvironmentSession", http.MethodGet, "/envsession/", getEnvironmentSession, chain(LogMw, IdMw)},
+	Route{"DeleteEnvironmentSession", http.MethodDelete, "/envsession/", deleteEnvironmentSession, chain(LogMw, IdMw)},
 }
