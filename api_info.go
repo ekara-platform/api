@@ -6,7 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/lagoon-platform/api/docker"
+	_ "github.com/lagoon-platform/api/docker"
 	"github.com/lagoon-platform/api/storage"
 
 	"net/http"
@@ -95,8 +95,8 @@ func (d *EnvironmentDetails) addStoredLongContent(s storage.Storage, key string,
 func getInfo(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
-	TLog.Println("Calling The docker stuff...")
-	docker.TestDocker(TLog, "tcp://192.168.99.100:2376", "1.30", STR)
+	//TLog.Println("Calling The docker stuff...")
+	//docker.TestDocker(TLog, "tcp://192.168.99.100:2376", "1.30", STR)
 
 	w.Header().Set("Content-Type", MimeTypeJSON)
 
