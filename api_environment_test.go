@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -17,22 +16,20 @@ import (
 // EMPTY STORAGE WITHOUT ANY ENVIRONMENT - START
 //************************************************
 func TestGetNoEnvironment(t *testing.T) {
+
 	usedStorage = storage.GetMockStorage()
 	defer usedStorage.Clean()
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(getEnvironment)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	application = App{}
+	application.initialize()
 
-	resp, err := http.Get(server.URL)
-	if err != nil {
-		t.Fatal(err)
-	}
+	req, _ := http.NewRequest(http.MethodGet, "/environment/", nil)
+	respRecorder := executeRequest(req)
 
-	checkResponseCode(t, http.StatusNotFound, resp)
+	checkResponseCode(t, http.StatusNotFound, respRecorder.Result())
 }
 
 func TestPutNoEnvironment(t *testing.T) {
@@ -42,16 +39,13 @@ func TestPutNoEnvironment(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(updateEnvironment)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	application = App{}
+	application.initialize()
 
-	resp, err := http.Get(server.URL)
-	if err != nil {
-		t.Fatal(err)
-	}
+	req, _ := http.NewRequest(http.MethodPut, "/environment/", bytes.NewBuffer([]byte("Dummy content")))
+	respRecorder := executeRequest(req)
 
-	checkResponseCode(t, http.StatusNotFound, resp)
+	checkResponseCode(t, http.StatusNotFound, respRecorder.Result())
 }
 
 func TestDeleteNoEnvironment(t *testing.T) {
@@ -62,17 +56,13 @@ func TestDeleteNoEnvironment(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(deleteEnvironment)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	application = App{}
+	application.initialize()
 
-	req := httptest.NewRequest(http.MethodDelete, server.URL, nil)
-	w := httptest.NewRecorder()
-	handler(w, req)
+	req, _ := http.NewRequest(http.MethodDelete, "/environment/", nil)
+	respRecorder := executeRequest(req)
 
-	resp := w.Result()
-
-	checkResponseCode(t, http.StatusNotFound, resp)
+	checkResponseCode(t, http.StatusNotFound, respRecorder.Result())
 }
 
 //************************************************
@@ -86,6 +76,7 @@ func TestDeleteNoEnvironment(t *testing.T) {
 func TestPostSecondEnvironment(t *testing.T) {
 
 	str := "dummy_environment_location"
+
 	usedStorage = storage.GetMockStorage()
 	defer usedStorage.Clean()
 	usedStorage.StoreString(storage.KEY_STORE_ENV_LOCATION, str)
@@ -93,9 +84,8 @@ func TestPostSecondEnvironment(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(loadEnvironment)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	application = App{}
+	application.initialize()
 
 	body := EnvironmentLoadRequest{
 		Location: str,
@@ -103,15 +93,11 @@ func TestPostSecondEnvironment(t *testing.T) {
 	jsonStr, err := json.Marshal(body)
 	assert.Nil(t, err)
 
-	req := httptest.NewRequest(http.MethodPost, server.URL, bytes.NewBuffer(jsonStr))
-	req.Header.Set("Content-Type", "application/json")
+	req, _ := http.NewRequest(http.MethodPost, "/environment/", bytes.NewBuffer(jsonStr))
+	respRecorder := executeRequest(req)
 
-	w := httptest.NewRecorder()
-	handler(w, req)
+	checkResponseCode(t, http.StatusConflict, respRecorder.Result())
 
-	resp := w.Result()
-
-	checkResponseCode(t, http.StatusConflict, resp)
 }
 
 //************************************************
@@ -130,17 +116,13 @@ func TestGetEnvironmentYaml(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(getEnvironment)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	application = App{}
+	application.initialize()
 
-	req := httptest.NewRequest(http.MethodGet, server.URL, nil)
+	req, _ := http.NewRequest(http.MethodGet, "/environment/", nil)
 	req.Header.Set("Content-type", MimeTypeYAML)
-
-	w := httptest.NewRecorder()
-	handler(w, req)
-
-	resp := w.Result()
+	respRecorder := executeRequest(req)
+	resp := respRecorder.Result()
 
 	checkResponseCode(t, http.StatusOK, resp)
 	checkBody(t, resp, []byte(str+"_YAML"))
@@ -158,17 +140,13 @@ func TestGetEnvironmentJson(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(getEnvironment)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	application = App{}
+	application.initialize()
 
-	req := httptest.NewRequest(http.MethodGet, server.URL, nil)
+	req, _ := http.NewRequest(http.MethodGet, "/environment/", nil)
 	req.Header.Set("Content-type", MimeTypeJSON)
-
-	w := httptest.NewRecorder()
-	handler(w, req)
-
-	resp := w.Result()
+	respRecorder := executeRequest(req)
+	resp := respRecorder.Result()
 
 	checkResponseCode(t, http.StatusOK, resp)
 	checkBody(t, resp, []byte(str+"_JSON"))
@@ -186,16 +164,12 @@ func TestGetEnvironmentNoContentType(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(getEnvironment)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	application = App{}
+	application.initialize()
 
-	req := httptest.NewRequest(http.MethodGet, server.URL, nil)
-
-	w := httptest.NewRecorder()
-	handler(w, req)
-
-	resp := w.Result()
+	req, _ := http.NewRequest(http.MethodGet, "/environment/", nil)
+	respRecorder := executeRequest(req)
+	resp := respRecorder.Result()
 
 	checkResponseCode(t, http.StatusOK, resp)
 	checkBody(t, resp, []byte(str+"_JSON"))
@@ -212,16 +186,13 @@ func TestDeleteEnvironment(t *testing.T) {
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
-	handler := http.HandlerFunc(deleteEnvironment)
-	server := httptest.NewServer(handler)
-	defer server.Close()
 
-	req := httptest.NewRequest(http.MethodDelete, server.URL, nil)
+	application = App{}
+	application.initialize()
 
-	w := httptest.NewRecorder()
-	handler(w, req)
-
-	resp := w.Result()
+	req, _ := http.NewRequest(http.MethodDelete, "/environment/", nil)
+	respRecorder := executeRequest(req)
+	resp := respRecorder.Result()
 
 	checkResponseCode(t, http.StatusOK, resp)
 	keys, _ := usedStorage.Keys()

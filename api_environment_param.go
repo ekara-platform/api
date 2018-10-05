@@ -69,7 +69,7 @@ func deleteEnvironmentParam(w http.ResponseWriter, r *http.Request) {
 	if !b {
 		err := fmt.Errorf("The key \"%s\" cannot be found", storage.KEY_STORE_ENV_PARAM)
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 

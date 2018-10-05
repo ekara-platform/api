@@ -3,55 +3,49 @@ package api
 import (
 	"log"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 )
 
 func TestGetTasks(t *testing.T) {
+	application = App{}
+	application.initialize()
+
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
-	handler := http.HandlerFunc(getTasks)
-	server := httptest.NewServer(handler)
-	defer server.Close()
 
-	resp, err := http.Get(server.URL)
-	if err != nil {
-		t.Fatal(err)
-	}
+	req, _ := http.NewRequest(http.MethodGet, "/tasks/", nil)
+	respRecorder := executeRequest(req)
 
-	checkResponseCode(t, http.StatusNotImplemented, resp)
-	checkEmptyBody(t, resp)
+	checkCode(t, http.StatusNotImplemented, respRecorder.Code)
+	checkEmptyRecoder(t, respRecorder)
 }
 
 func TestGetTaskDetails(t *testing.T) {
+	application = App{}
+	application.initialize()
+
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
-	handler := http.HandlerFunc(getTaskDetails)
-	server := httptest.NewServer(handler)
-	defer server.Close()
 
-	resp, err := http.Get(server.URL + "/tasks/12")
-	if err != nil {
-		t.Fatal(err)
-	}
+	req, _ := http.NewRequest(http.MethodGet, "/tasks/12", nil)
+	respRecorder := executeRequest(req)
 
-	checkResponseCode(t, http.StatusNotImplemented, resp)
-	checkEmptyBody(t, resp)
+	checkCode(t, http.StatusNotImplemented, respRecorder.Code)
+	checkEmptyRecoder(t, respRecorder)
 }
 
 func TestLaunchTask(t *testing.T) {
+	application = App{}
+	application.initialize()
+
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
-	handler := http.HandlerFunc(runTask)
-	server := httptest.NewServer(handler)
-	defer server.Close()
 
-	resp, err := http.Get(server.URL + "/tasks/12")
-	if err != nil {
-		t.Fatal(err)
-	}
+	req, _ := http.NewRequest(http.MethodPut, "/tasks/12", nil)
+	respRecorder := executeRequest(req)
 
-	checkResponseCode(t, http.StatusNotImplemented, resp)
-	checkEmptyBody(t, resp)
+	checkCode(t, http.StatusNotImplemented, respRecorder.Code)
+	checkEmptyRecoder(t, respRecorder)
+
 }

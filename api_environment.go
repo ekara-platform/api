@@ -9,6 +9,7 @@ import (
 
 	"github.com/lagoon-platform/api/storage"
 	"github.com/lagoon-platform/engine"
+	"github.com/lagoon-platform/engine/ansible"
 	"github.com/lagoon-platform/model"
 
 	"gopkg.in/yaml.v2"
@@ -64,7 +65,7 @@ func getEnvironment(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
-func validate(e EnvironmentLoadRequest) (lagoon engine.Lagoon, err error, vErrs model.ValidationErrors) {
+func validate(e EnvironmentLoadRequest) (lagoon engine.Engine, err error, vErrs model.ValidationErrors) {
 	root, flavor := repositoryFlavor(e.Location)
 	s := usedStorage
 	b, err := s.Contains(storage.KEY_STORE_ENV_PARAM)
@@ -81,7 +82,7 @@ func validate(e EnvironmentLoadRequest) (lagoon engine.Lagoon, err error, vErrs 
 			// TODO make a proper error here
 			return
 		}
-		var p engine.ParamContent
+		var p ansible.ParamContent
 		p, err = parseParams(string(val))
 		if err != nil {
 			// TODO make a proper error here
@@ -436,8 +437,8 @@ func repositoryFlavor(url string) (string, string) {
 }
 
 //ParseParams parses a yaml file into a map of "string:interface{}"
-func parseParams(content string) (engine.ParamContent, error) {
-	r := make(engine.ParamContent)
+func parseParams(content string) (ansible.ParamContent, error) {
+	r := make(ansible.ParamContent)
 	err := yaml.Unmarshal([]byte(content), &r)
 	if err != nil {
 		return r, err

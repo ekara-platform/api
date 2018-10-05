@@ -3,10 +3,8 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -18,70 +16,52 @@ import (
 // EMPTY STORAGE WITHOUT ANY KEYS - START
 //************************************************
 func TestGetNoContent(t *testing.T) {
-	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+
+	application = App{}
+	application.initialize()
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(getValue)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	req, _ := http.NewRequest(http.MethodGet, "/storage/"+"dummy_id", nil)
+	respRecorder := executeRequest(req)
 
-	resp, err := http.Get(server.URL + "/" + "dummy_id")
-	if err != nil {
-		t.Fatal(err)
-	}
+	checkCode(t, http.StatusNotFound, respRecorder.Code)
 
-	checkResponseCode(t, http.StatusNotFound, resp)
 }
 
 func TestDeleteNoContent(t *testing.T) {
 
-	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	application = App{}
+	application.initialize()
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(deleteValue)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	req, _ := http.NewRequest(http.MethodDelete, "/storage/"+"dummy_id", nil)
+	respRecorder := executeRequest(req)
 
-	req := httptest.NewRequest(http.MethodDelete, server.URL+"/"+"dummy_id", nil)
-	w := httptest.NewRecorder()
-	handler(w, req)
+	checkCode(t, http.StatusNotFound, respRecorder.Code)
 
-	resp := w.Result()
-
-	checkResponseCode(t, http.StatusNotFound, resp)
 }
 
 func TestGetKeysNoContent(t *testing.T) {
 	usedStorage = storage.GetMockStorage()
 	defer usedStorage.Clean()
 
+	application = App{}
+	application.initialize()
+
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	defer usedStorage.Clean()
+	req, _ := http.NewRequest(http.MethodGet, "/storage/", nil)
+	respRecorder := executeRequest(req)
 
-	handler := http.HandlerFunc(getKeys)
-	server := httptest.NewServer(handler)
-	defer server.Close()
-
-	resp, err := http.Get(server.URL)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
+	checkCode(t, http.StatusOK, respRecorder.Code)
 
 	keys := make([]string, 0)
-	err = json.Unmarshal(body, &keys)
+	err := json.Unmarshal(respRecorder.Body.Bytes(), &keys)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -89,7 +69,6 @@ func TestGetKeysNoContent(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, len(keys), 0)
 
-	checkResponseCode(t, http.StatusOK, resp)
 }
 
 //************************************************
@@ -104,12 +83,11 @@ func TestSaveValue(t *testing.T) {
 	usedStorage = storage.GetMockStorage()
 	defer usedStorage.Clean()
 
+	application = App{}
+	application.initialize()
+
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
-
-	handler := http.HandlerFunc(saveValue)
-	server := httptest.NewServer(handler)
-	defer server.Close()
 
 	body := StorePostRequest{
 		Key:   strKey,
@@ -119,15 +97,10 @@ func TestSaveValue(t *testing.T) {
 	jsonStr, err := json.Marshal(body)
 	assert.Nil(t, err)
 
-	req := httptest.NewRequest(http.MethodPost, server.URL, bytes.NewBuffer(jsonStr))
-	req.Header.Set("Content-Type", "application/json")
+	req, _ := http.NewRequest(http.MethodPost, "/storage/", bytes.NewBuffer(jsonStr))
+	respRecorder := executeRequest(req)
 
-	w := httptest.NewRecorder()
-	handler(w, req)
-
-	resp := w.Result()
-
-	checkResponseCode(t, http.StatusCreated, resp)
+	checkCode(t, http.StatusCreated, respRecorder.Code)
 
 	b, err := usedStorage.Contains(strKey)
 	assert.Nil(t, err)
@@ -154,27 +127,19 @@ func TestGetKeys(t *testing.T) {
 	usedStorage.StoreString(strKey2, strValue2)
 	usedStorage.StoreString(strKey3, strValue3)
 
+	application = App{}
+	application.initialize()
+
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	handler := http.HandlerFunc(getKeys)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	req, _ := http.NewRequest(http.MethodGet, "/storage/", nil)
+	respRecorder := executeRequest(req)
 
-	resp, err := http.Get(server.URL)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	checkResponseCode(t, http.StatusOK, resp)
+	checkCode(t, http.StatusOK, respRecorder.Code)
 
 	keys := make([]string, 0)
-	err = json.Unmarshal(body, &keys)
+	err := json.Unmarshal(respRecorder.Body.Bytes(), &keys)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -199,7 +164,7 @@ func TestGetValue(t *testing.T) {
 	application = App{}
 	application.initialize()
 
-	req, _ := http.NewRequest("GET", "/storage/"+strKey, nil)
+	req, _ := http.NewRequest(http.MethodGet, "/storage/"+strKey, nil)
 	respRecorder := executeRequest(req)
 
 	checkCode(t, http.StatusOK, respRecorder.Code)
@@ -227,7 +192,7 @@ func TestDeleteValue(t *testing.T) {
 	application = App{}
 	application.initialize()
 
-	req, _ := http.NewRequest("DELETE", "/storage/"+strKey, nil)
+	req, _ := http.NewRequest(http.MethodDelete, "/storage/"+strKey, nil)
 	respRecorder := executeRequest(req)
 	checkCode(t, http.StatusOK, respRecorder.Code)
 

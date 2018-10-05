@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	_ "fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -21,7 +20,6 @@ func getValue(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	id := vars["id"]
-	log.Printf("--> getValue Id %s\n", id)
 	if FilterKeyFound(id, id, w) {
 		return
 	}
@@ -72,7 +70,6 @@ func getKeys(w http.ResponseWriter, r *http.Request) {
 	}
 	TResult.Print(string(resultJSON))
 	w.Header().Set("Content-Type", MimeTypeJSON)
-	log.Printf("--> Returned JSON in getKeys %s", resultJSON)
 	w.WriteHeader(http.StatusOK)
 	w.Write(resultJSON)
 }

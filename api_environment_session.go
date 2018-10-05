@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/lagoon-platform/api/storage"
@@ -13,6 +12,10 @@ import (
 
 func getEnvironmentSession(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
+
+	if FilterKeyFound(storage.KEY_STORE_ENV_SESSION, "Session", w) {
+		return
+	}
 
 	b, val, err := usedStorage.Get(storage.KEY_STORE_ENV_SESSION)
 	if err != nil {
@@ -54,9 +57,6 @@ func saveEnvironmentSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("--> Bytes %v\n", string(b))
-	log.Printf("--> Unmarshaled session %v\n", session)
-
 	if len(session.CreationSession.Client) == 0 {
 		err := fmt.Errorf(ERROR_CONTENT, "Session client cannot be empty", err.Error())
 		TLog.Printf(err.Error())
@@ -86,6 +86,9 @@ func deleteEnvironmentSession(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
 	s := usedStorage
+	if FilterKeyFound(storage.KEY_STORE_ENV_SESSION, "Session", w) {
+		return
+	}
 
 	b, err := s.Contains(storage.KEY_STORE_ENV_SESSION)
 	if err != nil {

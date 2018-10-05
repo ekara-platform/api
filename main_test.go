@@ -54,6 +54,14 @@ func checkEmptyBody(t *testing.T, resp *http.Response) {
 	}
 }
 
+// checkEmptyRecoder checks if body of the provided recorder is empty
+// If the body is not empty the test will result in a Errorf,
+func checkEmptyRecoder(t *testing.T, rec *httptest.ResponseRecorder) {
+	if len(rec.Body.Bytes()) > 0 {
+		t.Errorf("Expected nothing. Got something")
+	}
+}
+
 func checkBody(t *testing.T, resp *http.Response, expected []byte) {
 	var body []byte
 	body, err := ioutil.ReadAll(resp.Body)

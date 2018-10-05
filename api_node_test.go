@@ -3,38 +3,34 @@ package api
 import (
 	"log"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 )
 
 func TestGetNodes(t *testing.T) {
+	application = App{}
+	application.initialize()
+
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
-	handler := http.HandlerFunc(getNodes)
-	server := httptest.NewServer(handler)
-	defer server.Close()
 
-	resp, err := http.Get(server.URL)
-	if err != nil {
-		t.Fatal(err)
-	}
-	checkResponseCode(t, http.StatusNotImplemented, resp)
-	checkEmptyBody(t, resp)
+	req, _ := http.NewRequest(http.MethodGet, "/nodes/", nil)
+	respRecorder := executeRequest(req)
+
+	checkCode(t, http.StatusNotImplemented, respRecorder.Code)
+	checkEmptyRecoder(t, respRecorder)
 }
 
 func TestGetNodeDetails(t *testing.T) {
+	application = App{}
+	application.initialize()
+
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
-	handler := http.HandlerFunc(getNodeDetails)
-	server := httptest.NewServer(handler)
-	defer server.Close()
 
-	resp, err := http.Get(server.URL + "/nodes/12")
-	if err != nil {
-		t.Fatal(err)
-	}
+	req, _ := http.NewRequest(http.MethodGet, "/nodes/12", nil)
+	respRecorder := executeRequest(req)
 
-	checkResponseCode(t, http.StatusNotImplemented, resp)
-	checkEmptyBody(t, resp)
+	checkCode(t, http.StatusNotImplemented, respRecorder.Code)
+	checkEmptyRecoder(t, respRecorder)
 }
