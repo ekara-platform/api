@@ -2,7 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
+	_ "fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -20,18 +21,15 @@ func getValue(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	id := vars["id"]
-
-	b, val, err := usedStorage.Get(id)
-	if err != nil {
-		TLog.Printf(ERROR_CONTENT, "", err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	log.Printf("--> getValue Id %s\n", id)
+	if FilterKeyFound(id, id, w) {
 		return
 	}
 
-	if !b {
-		err := fmt.Errorf("The key \"%s\" cannot be found", id)
+	_, val, err := usedStorage.Get(id)
+	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -65,6 +63,7 @@ func getKeys(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resultJSON, err := json.Marshal(val)
+
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -73,6 +72,7 @@ func getKeys(w http.ResponseWriter, r *http.Request) {
 	}
 	TResult.Print(string(resultJSON))
 	w.Header().Set("Content-Type", MimeTypeJSON)
+	log.Printf("--> Returned JSON in getKeys %s", resultJSON)
 	w.WriteHeader(http.StatusOK)
 	w.Write(resultJSON)
 }
@@ -106,23 +106,11 @@ func deleteValue(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	s := usedStorage
-
-	b, err := s.Contains(id)
-	if err != nil {
-		TLog.Printf(ERROR_CONTENT, "Deleting a key", err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if FilterKeyFound(id, id, w) {
 		return
 	}
 
-	if !b {
-		err := fmt.Errorf("The key \"%s\" cannot be found", id)
-		TLog.Printf(ERROR_CONTENT, "Getting a key", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	b, err = usedStorage.Delete(id)
+	b, err := usedStorage.Delete(id)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "Deleting a key", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)

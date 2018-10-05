@@ -14,7 +14,7 @@ func FilterKeyFound(key, message string, w http.ResponseWriter) (callerShouldRet
 		return
 	}
 	if !b {
-		err := fmt.Errorf("The %s cannot be located into the storage", message)
+		err := fmt.Errorf("The key \"%s\" cannot be located into the storage", message)
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusNotFound)
 		callerShouldReturn = true

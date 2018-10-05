@@ -35,6 +35,7 @@ type Storage interface {
 	Contains(key string) (bool, error)
 	Delete(key string) (bool, error)
 	Keys() ([]string, error)
+	Clean() error
 }
 
 func GetConsulStorage() Storage {

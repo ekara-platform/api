@@ -78,3 +78,17 @@ func (r ConsulStorage) Keys() ([]string, error) {
 	}
 	return strs, nil
 }
+
+func (r ConsulStorage) Clean() error {
+	keys, err := r.Keys()
+	if err != nil {
+		return err
+	}
+	for _, v := range keys {
+		_, err := r.Delete(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

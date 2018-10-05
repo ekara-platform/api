@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strings"
 
+	"net/http/httptest"
+
 	"testing"
 )
 
@@ -14,6 +16,14 @@ import (
 func checkResponseCode(t *testing.T, expected int, resp *http.Response) {
 	if expected != resp.StatusCode {
 		t.Errorf("Expected response code %d. Got %d\n", expected, resp.StatusCode)
+	}
+}
+
+// checkCode checks if the actual code
+// equals the expected one
+func checkCode(t *testing.T, expected int, actual int) {
+	if expected != actual {
+		t.Errorf("Expected response code %d. Got %d\n", expected, actual)
 	}
 }
 
@@ -87,4 +97,12 @@ func checkJsonRoundTpip(t *testing.T, jsonString string, across interface{}) (bo
 	// if the output is not equals to jsonString
 	// then data loss
 	return jsonString == string(output), string(output)
+}
+
+// TODO DOCUMENTATION
+func executeRequest(req *http.Request) *httptest.ResponseRecorder {
+	rr := httptest.NewRecorder()
+	application.Router.ServeHTTP(rr, req)
+
+	return rr
 }

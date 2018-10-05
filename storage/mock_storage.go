@@ -28,6 +28,10 @@ func (ms *MockEmpyStorage) Keys() ([]string, error) {
 	return r, nil
 }
 
+func (ms *MockEmpyStorage) Clean() error {
+	return nil
+}
+
 type mockStorage struct {
 	content map[string]string
 }
@@ -74,4 +78,19 @@ func (ms *mockStorage) Keys() ([]string, error) {
 		r = append(r, k)
 	}
 	return r, nil
+}
+
+func (ms *mockStorage) Clean() error {
+	keys, err := ms.Keys()
+	if err != nil {
+		return err
+	}
+
+	for _, v := range keys {
+		_, err := ms.Delete(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
