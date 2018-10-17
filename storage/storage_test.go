@@ -8,13 +8,13 @@ import (
 
 func TestRemoveEkaraPrefix(t *testing.T) {
 
-	s := removeEkarePrefix(EKARA_PREFIX + "aaa")
+	s := RemoveEkaraPrefix(EKARA_PREFIX + "aaa")
 	assert.Equal(t, s, "aaa")
 
-	s = removeEkaraPrefix(EKARA_PREFIX)
+	s = RemoveEkaraPrefix(EKARA_PREFIX)
 	assert.Equal(t, s, "")
 
-	s = removeEkaraPrefix("aaa")
+	s = RemoveEkaraPrefix("aaa")
 	assert.Equal(t, s, "aaa")
 
 }
