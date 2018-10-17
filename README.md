@@ -1,8 +1,8 @@
-# Lagoon API
+# Ekara API
 ___
 
 
 ## usage
 ___
 
-> lagoonapi --logScript --logTime --port=3211
+> api --logScript --logTime --port=3211

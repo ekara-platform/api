@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/lagoon-platform/api/storage"
-	"github.com/lagoon-platform/engine"
+	"github.com/ekara-platform/api/storage"
+	"github.com/ekara-platform/engine"
 )
 
 func getEnvironmentSession(w http.ResponseWriter, r *http.Request) {

@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/lagoon-platform/api/storage"
+	"github.com/ekara-platform/api/storage"
 )
 
 func getEnvironmentParam(w http.ResponseWriter, r *http.Request) {

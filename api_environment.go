@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lagoon-platform/api/storage"
-	"github.com/lagoon-platform/engine"
-	"github.com/lagoon-platform/engine/ansible"
-	"github.com/lagoon-platform/model"
+	"github.com/ekara-platform/api/storage"
+	"github.com/ekara-platform/engine"
+	"github.com/ekara-platform/engine/ansible"
+	"github.com/ekara-platform/model"
 
 	"gopkg.in/yaml.v2"
 )
@@ -20,7 +20,7 @@ type EnvironmentLoadRequest struct {
 }
 
 // getEnvironment returns the details enviroment currently
-// manage by lagoon
+// manage by ekara
 // Acceptable Content type are :
 // - "application/json"
 // - "application/x.yaml"
@@ -65,7 +65,7 @@ func getEnvironment(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
-func validate(e EnvironmentLoadRequest) (lagoon engine.Engine, err error, vErrs model.ValidationErrors) {
+func validate(e EnvironmentLoadRequest) (ekara engine.Engine, err error, vErrs model.ValidationErrors) {
 	root, flavor := repositoryFlavor(e.Location)
 	s := usedStorage
 	b, err := s.Contains(storage.KEY_STORE_ENV_PARAM)
@@ -74,7 +74,7 @@ func validate(e EnvironmentLoadRequest) (lagoon engine.Engine, err error, vErrs 
 		return
 	}
 
-	var lagoonError error
+	var ekaraError error
 	if b {
 		var val []byte
 		_, val, err = s.Get(storage.KEY_STORE_ENV_PARAM)
@@ -88,20 +88,20 @@ func validate(e EnvironmentLoadRequest) (lagoon engine.Engine, err error, vErrs 
 			// TODO make a proper error here
 			return
 		}
-		TLog.Printf("Creating lagoon environment with parameter for templating")
-		lagoon, lagoonError = engine.Create(TLog, "/var/lib/lagoon", p)
+		TLog.Printf("Creating ekara environment with parameter for templating")
+		ekara, ekaraError = engine.Create(TLog, "/var/lib/ekara", p)
 	} else {
-		TLog.Printf("Creating lagoon environment without parameter for templating")
-		lagoon, lagoonError = engine.Create(TLog, "/var/lib/lagoon", map[string]interface{}{})
+		TLog.Printf("Creating ekara environment without parameter for templating")
+		ekara, ekaraError = engine.Create(TLog, "/var/lib/ekara", map[string]interface{}{})
 	}
 
-	if lagoonError == nil {
-		lagoonError = lagoon.Init(root, flavor) // FIXME: really need custom descriptor name ?
+	if ekaraError == nil {
+		ekaraError = ekara.Init(root, flavor) // FIXME: really need custom descriptor name ?
 	}
 
-	if lagoonError != nil {
+	if ekaraError != nil {
 		var ok bool
-		vErrs, ok = lagoonError.(model.ValidationErrors)
+		vErrs, ok = ekaraError.(model.ValidationErrors)
 		// if the error is not a "validation error" then we return it
 		if !ok {
 			// TODO make a proper error here
@@ -173,7 +173,7 @@ func updateEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	lagoon, err, vErrs := validate(e)
+	ekara, err, vErrs := validate(e)
 	// An error occured validating the enviroment
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -201,7 +201,7 @@ func updateEnvironment(w http.ResponseWriter, r *http.Request) {
 
 	// TODO Complete the environment update process here
 
-	environmentJson, err := json.Marshal(lagoon.Environment())
+	environmentJson, err := json.Marshal(ekara.Environment())
 	if err != nil {
 		http.Error(
 			w,
@@ -211,7 +211,7 @@ func updateEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	environmentYaml, err := yaml.Marshal(lagoon.Environment())
+	environmentYaml, err := yaml.Marshal(ekara.Environment())
 	if err != nil {
 		http.Error(
 			w,
@@ -264,7 +264,7 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	lagoon, err, vErrs := validate(e)
+	ekara, err, vErrs := validate(e)
 	// An error occured validating the enviroment
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -294,7 +294,7 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 
 	// TODO Complete the environment creation process here
 
-	environmentJson, err := json.Marshal(lagoon.Environment())
+	environmentJson, err := json.Marshal(ekara.Environment())
 	if err != nil {
 		http.Error(
 			w,
@@ -304,7 +304,7 @@ func loadEnvironment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	environmentYaml, err := yaml.Marshal(lagoon.Environment())
+	environmentYaml, err := yaml.Marshal(ekara.Environment())
 	if err != nil {
 		http.Error(
 			w,
@@ -371,7 +371,7 @@ func store(s storage.Storage, w http.ResponseWriter, key string, content []byte,
 }
 
 // deleteEnvironment deletes the enviroment currently
-// manage by lagoon
+// manage by ekara
 func deleteEnvironment(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 

@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ekara-platform/api/storage"
 	"github.com/gorilla/mux"
-	"github.com/lagoon-platform/api/storage"
 )
 
 type App struct {
@@ -25,13 +25,11 @@ func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
 	logger = log
 	// this comes from http://www.kammerl.de/ascii/AsciiSignature.php
 	// the font used id "standard"
-	logger.Println(`                                    `)
-	logger.Println(` _                                  `)
-	logger.Println(`| |    __ _  __ _  ___   ___  _ __  `)
-	logger.Println(`| |   / _  |/ _  |/ _ \ / _ \| '_ \ `)
-	logger.Println(`| |__| (_| | (_| | (_) | (_) | | | |`)
-	logger.Println(`|_____\__,_|\__, |\___/ \___/|_| |_|`)
-	logger.Println(`            |___/                   `)
+	log.Println(" _____ _                   ")
+	log.Println("| ____| | ____ _ _ __ __ _ ")
+	log.Println("|  _| | |/ / _` | '__/ _` |")
+	log.Println("| |___|   < (_| | | | (_| |")
+	log.Println(`|_____|_|\_\__,_|_|  \__,_|`)
 
 	logger.Println(`    _    ____ ___                   `)
 	logger.Println(`   / \  |  _ \_ _|                  `)

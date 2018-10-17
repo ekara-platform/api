@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	_ "github.com/lagoon-platform/engine"
-	_ "github.com/lagoon-platform/model"
+	_ "github.com/ekara-platform/engine"
+	_ "github.com/ekara-platform/model"
 )
 
 type FakeInitRequest struct {

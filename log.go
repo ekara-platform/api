@@ -31,7 +31,7 @@ func initLog(bScript, bTime bool) {
 
 	/*
 		// General loger
-		gLog := &lumberjack.Logger{Filename: "LagoonApi.log", MaxSize: 250, MaxBackups: 5, MaxAge: 5}
+		gLog := &lumberjack.Logger{Filename: "EkaraApi.log", MaxSize: 250, MaxBackups: 5, MaxAge: 5}
 		TLog = log.New(gLog, "Log: ", log.Ldate|log.Ltime|log.Lshortfile)
 		TResult = log.New(gLog, "Result: ", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -40,7 +40,7 @@ func initLog(bScript, bTime bool) {
 		// Time execution loger
 		TLog.Printf("time loggin required %v", bTime)
 		if bTime {
-			writer = &lumberjack.Logger{Filename: "LagoonApiTime.log", MaxSize: 250, MaxBackups: 5, MaxAge: 5}
+			writer = &lumberjack.Logger{Filename: "EkaraApiTime.log", MaxSize: 250, MaxBackups: 5, MaxAge: 5}
 		} else {
 			writer = ioutil.Discard // If the log of time is not wanted --> redirect
 		}
@@ -49,7 +49,7 @@ func initLog(bScript, bTime bool) {
 		// Script logger
 		TLog.Printf("script loggin required %v", bScript)
 		if bScript {
-			writer = &lumberjack.Logger{Filename: "LagoonApiScript.log", MaxSize: 250, MaxBackups: 5, MaxAge: 5}
+			writer = &lumberjack.Logger{Filename: "EkaraApiScript.log", MaxSize: 250, MaxBackups: 5, MaxAge: 5}
 		} else {
 			writer = ioutil.Discard // If the log of script is not wanted --> redirect
 		}

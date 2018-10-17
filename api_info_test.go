@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/lagoon-platform/api/storage"
+	"github.com/ekara-platform/api/storage"
 )
 
 func TestGetInfo(t *testing.T) {

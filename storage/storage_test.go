@@ -6,15 +6,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRemoveLagoonPrefix(t *testing.T) {
+func TestRemoveEkaraPrefix(t *testing.T) {
 
-	s := removeLagoonPrefix(LAGOON_PREFIX + "aaa")
+	s := removeEkarePrefix(EKARA_PREFIX + "aaa")
 	assert.Equal(t, s, "aaa")
 
-	s = removeLagoonPrefix(LAGOON_PREFIX)
+	s = removeEkaraPrefix(EKARA_PREFIX)
 	assert.Equal(t, s, "")
 
-	s = removeLagoonPrefix("aaa")
+	s = removeEkaraPrefix("aaa")
 	assert.Equal(t, s, "aaa")
 
 }

@@ -31,7 +31,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		// Log the user in and return the token
 		token := createToken()
 		// TODO return the token here
-		r.Header.Set("lagoon_token", token)
+		r.Header.Set("ekara_token", token)
 		TResult.Printf(USER_LOGIN, l.User, token)
 		w.WriteHeader(http.StatusOK)
 	} else {
@@ -68,7 +68,7 @@ func increaseTokenValidity(token string) {
 
 func getToken(r *http.Request) (token string) {
 	// TODO make real implementation here
-	token = r.Header.Get("lagoon_token")
+	token = r.Header.Get("ekara_token")
 	TLog.Printf("get token :%s ", token)
 	return
 }

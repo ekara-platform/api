@@ -46,6 +46,29 @@
   revision = "edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c"
 
 [[projects]]
+  name = "github.com/docker/docker"
+  packages = [
+    "api/types",
+    "api/types/blkiodev",
+    "api/types/container",
+    "api/types/events",
+    "api/types/filters",
+    "api/types/mount",
+    "api/types/network",
+    "api/types/reference",
+    "api/types/registry",
+    "api/types/strslice",
+    "api/types/swarm",
+    "api/types/time",
+    "api/types/versions",
+    "api/types/volume",
+    "client",
+    "pkg/tlsconfig"
+  ]
+  revision = "092cba3727bb9b4a2f0e922cd6c0f93ea270e363"
+  version = "v1.13.1"
+
+[[projects]]
   name = "github.com/docker/go-connections"
   packages = [
     "nat",
@@ -62,6 +85,23 @@
   version = "v0.3.3"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/ekara-platform/engine"
+  packages = [
+    ".",
+    "ansible",
+    "component",
+    "util"
+  ]
+  revision = "3bf8be3e4818f915a30658323d1a80598143bfb9"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/ekara-platform/model"
+  packages = ["."]
+  revision = "323d1cd9479c5e7967cbd12160f99a0701c4508f"
+
+[[projects]]
   name = "github.com/emirpasic/gods"
   packages = [
     "containers",
@@ -71,8 +111,8 @@
     "trees/binaryheap",
     "utils"
   ]
-  revision = "f6c17b524822278a87e3b3bd809fec33b51f5b46"
-  version = "v1.9.0"
+  revision = "1615341f118ae12f353cc8a983f35b584342c9b3"
+  version = "v1.12.0"
 
 [[projects]]
   name = "github.com/gogo/protobuf"
@@ -95,8 +135,8 @@
 [[projects]]
   name = "github.com/hashicorp/consul"
   packages = ["api"]
-  revision = "e716d1b5f8be252b3e53906c6d5632e0228f30fa"
-  version = "v1.2.2"
+  revision = "e8757838a49feeb682c7e6ad6b78694a78b2096b"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/hashicorp/go-cleanhttp"
@@ -135,18 +175,6 @@
   version = "0.5"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/lagoon-platform/engine"
-  packages = ["."]
-  revision = "f5cb0a0b339448d73635ab68c4a3edf42f9b1587"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/lagoon-platform/model"
-  packages = ["."]
-  revision = "c52ead022e145a8e7c89f32b14bd9b121d906ee7"
-
-[[projects]]
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
   revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
@@ -155,8 +183,8 @@
 [[projects]]
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "fa473d140ef3c6adf42d6b391fe76707f1f243c8"
-  version = "v1.0.0"
+  revision = "3536a929edddb9a5b34bd6861dc4a9647cb459fe"
+  version = "v1.1.2"
 
 [[projects]]
   name = "github.com/opencontainers/go-digest"
@@ -241,7 +269,7 @@
     "ssh/agent",
     "ssh/knownhosts"
   ]
-  revision = "0709b304e793a5edb4a2c0145f281ecdc20838a4"
+  revision = "0c41d7ab0a0ee717d4590a44bcb987dfd9e183eb"
 
 [[projects]]
   branch = "master"
@@ -252,13 +280,13 @@
     "internal/socks",
     "proxy"
   ]
-  revision = "161cd47e91fd58ac17490ef4d742dc98bb4cf60e"
+  revision = "49bb7cea24b1df9410e1712aa6433dae904ff66a"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "8cf3aee429924738c56c34bb819c4ea8273fc434"
+  revision = "fa43e7bc11baaae89f3f902b2b4d832b68234844"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -288,8 +316,8 @@
     "osfs",
     "util"
   ]
-  revision = "59952543636f55de3f860b477b615093d5c2c3e4"
-  version = "v4.2.1"
+  revision = "982626487c60a5252e7d0b695ca23fb0fa2fd670"
+  version = "v4.3.0"
 
 [[projects]]
   name = "gopkg.in/src-d/go-git.v4"
@@ -335,8 +363,8 @@
     "utils/merkletrie/internal/frame",
     "utils/merkletrie/noder"
   ]
-  revision = "d3cec13ac0b195bfb897ed038a08b5130ab9969e"
-  version = "v4.7.0"
+  revision = "cd64b4d630b6c2d2b3d72e9615e14f9d58bb5787"
+  version = "v4.7.1"
 
 [[projects]]
   name = "gopkg.in/warnings.v0"
@@ -353,6 +381,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "bf2ecff10b60068aa3c3b1419ae7b23e74f3574288d226ec969199c49c1f16c7"
+  inputs-digest = "c9268931ae4010a7442d6b1a6c8cd3639d0186a55a3f9446bab91dec0bb22096"
   solver-name = "gps-cdcl"
   solver-version = 1

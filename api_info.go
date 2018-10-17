@@ -6,16 +6,12 @@ import (
 
 	"github.com/gorilla/mux"
 
-	_ "github.com/lagoon-platform/api/docker"
-	"github.com/lagoon-platform/api/storage"
+	_ "github.com/ekara-platform/api/docker"
+	"github.com/ekara-platform/api/storage"
 
 	"net/http"
 	"net/url"
 	"os"
-)
-
-const (
-	STR string = "C:\\Users\\e518546\\.docker\\machine\\certs"
 )
 
 type ApiInfo struct {
@@ -87,7 +83,7 @@ func (d *EnvironmentDetails) addStoredLongContent(s storage.Storage, key string,
 				panic(e)
 			}
 		}
-		d.storedLongContent[storage.RemoveLagoonPrefix(key)] = string(url.String())
+		d.storedLongContent[storage.RemoveEkaraPrefix(key)] = string(url.String())
 	}
 }
 
@@ -96,7 +92,7 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
 	//TLog.Println("Calling The docker stuff...")
-	//docker.TestDocker(TLog, "tcp://192.168.99.100:2376", "1.30", STR)
+	//docker.TestDocker(TLog)
 
 	w.Header().Set("Content-Type", MimeTypeJSON)
 

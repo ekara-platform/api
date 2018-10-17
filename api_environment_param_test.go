@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/lagoon-platform/api/storage"
+	"github.com/ekara-platform/api/storage"
 	"github.com/stretchr/testify/assert"
 )
 
