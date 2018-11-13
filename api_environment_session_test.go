@@ -19,7 +19,7 @@ import (
 func TestGetNoSession(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -36,7 +36,7 @@ func TestGetNoSession(t *testing.T) {
 func TestDeleteNoSession(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -70,7 +70,7 @@ func TestSaveSession(t *testing.T) {
 	assert.Nil(t, err)
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -100,7 +100,7 @@ func TestGetSession(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
 	usedStorage.StoreString(storage.KEY_STORE_ENV_SESSION, strContent)
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -122,7 +122,7 @@ func TestDeleteSession(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
 	usedStorage.StoreString(storage.KEY_STORE_ENV_SESSION, strContent)
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)

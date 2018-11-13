@@ -18,7 +18,7 @@ import (
 func TestGetNoEnvironment(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -34,7 +34,7 @@ func TestGetNoEnvironment(t *testing.T) {
 
 func TestPutNoEnvironment(t *testing.T) {
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -51,7 +51,7 @@ func TestPutNoEnvironment(t *testing.T) {
 func TestDeleteNoEnvironment(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -78,7 +78,7 @@ func TestPostSecondEnvironment(t *testing.T) {
 	str := "dummy_environment_location"
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 	usedStorage.StoreString(storage.KEY_STORE_ENV_LOCATION, str)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
@@ -108,7 +108,7 @@ func TestGetEnvironmentYaml(t *testing.T) {
 
 	str := "dummy_environment"
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 	usedStorage.StoreString(storage.KEY_STORE_ENV_LOCATION, str+"_location")
 	usedStorage.StoreString(storage.KEY_STORE_ENV_YAML, str+"_YAML")
 	usedStorage.StoreString(storage.KEY_STORE_ENV_JSON, str+"_JSON")
@@ -132,7 +132,7 @@ func TestGetEnvironmentJson(t *testing.T) {
 
 	str := "dummy_environment"
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 	usedStorage.StoreString(storage.KEY_STORE_ENV_LOCATION, str+"_location")
 	usedStorage.StoreString(storage.KEY_STORE_ENV_YAML, str+"_YAML")
 	usedStorage.StoreString(storage.KEY_STORE_ENV_JSON, str+"_JSON")
@@ -156,7 +156,7 @@ func TestGetEnvironmentNoContentType(t *testing.T) {
 
 	str := "dummy_environment"
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 	usedStorage.StoreString(storage.KEY_STORE_ENV_LOCATION, str+"_location")
 	usedStorage.StoreString(storage.KEY_STORE_ENV_YAML, str+"_YAML")
 	usedStorage.StoreString(storage.KEY_STORE_ENV_JSON, str+"_JSON")
@@ -178,7 +178,7 @@ func TestGetEnvironmentNoContentType(t *testing.T) {
 func TestDeleteEnvironment(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 	usedStorage.StoreString(storage.KEY_STORE_ENV_JSON, "KEY_STORE_ENV_JSON_CONTENT")
 	usedStorage.StoreString(storage.KEY_STORE_ENV_LOCATION, "KEY_STORE_ENV_LOCATION_CONTENT")
 	usedStorage.StoreString(storage.KEY_STORE_ENV_CREATED_AT, "KEY_STORE_ENV_CREATED_AT")

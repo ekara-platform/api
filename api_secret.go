@@ -8,18 +8,18 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// getValue returns the stored content corresponding to the key received
+// getSecret returns the secret content corresponding to the key received
 // as parameter
-func getValue(w http.ResponseWriter, r *http.Request) {
+func getSecret(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
 	vars := mux.Vars(r)
 	id := vars["id"]
-	if FilterKeyFound(id, id, w) {
+	if FilterSecretKeyFound(id, id, w) {
 		return
 	}
 
-	_, val, err := usedStorage.Get(id)
+	_, val, err := usedSecret.GetSecret(id)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -44,11 +44,11 @@ func getValue(w http.ResponseWriter, r *http.Request) {
 	w.Write(resultJSON)
 }
 
-// getKeys returns the list of keys stored
-func getKeys(w http.ResponseWriter, r *http.Request) {
+// getSecretKeys returns the list of secret keys
+func getSecretKeys(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
-	val, err := usedStorage.Keys()
+	val, err := usedSecret.SecretKeys()
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -69,8 +69,8 @@ func getKeys(w http.ResponseWriter, r *http.Request) {
 	w.Write(resultJSON)
 }
 
-// saveValue save into the storage the key value received as parameter
-func saveValue(w http.ResponseWriter, r *http.Request) {
+// saveSecret save the the secret key value received as parameter
+func saveSecret(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
 	var req StorePostRequest
@@ -80,7 +80,7 @@ func saveValue(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = usedStorage.StoreString(req.Key, req.Value)
+	err = usedSecret.StoreSecretString(req.Key, req.Value)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -90,19 +90,19 @@ func saveValue(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-// deleteValue deletes the stored content corresponding to the key received
+// deleteSecret deletes the secret content corresponding to the key received
 // as parameter
-func deleteValue(w http.ResponseWriter, r *http.Request) {
+func deleteSecret(w http.ResponseWriter, r *http.Request) {
 	defer traceTime(here())()
 
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	if FilterKeyFound(id, id, w) {
+	if FilterSecretKeyFound(id, id, w) {
 		return
 	}
 
-	b, err := usedStorage.Delete(id)
+	b, err := usedSecret.DeleteSecret(id)
 	if err != nil {
 		TLog.Printf(ERROR_CONTENT, "Deleting a key", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)

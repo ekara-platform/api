@@ -30,8 +30,13 @@ var routes = Routes{
 	Route{"PutStorage", http.MethodPut, "/storage/", saveValue, chain(LogMw, BodyMw)},
 	Route{"GetStorage", http.MethodGet, "/storage/{id}", getValue, chain(LogMw, IdMw)},
 	Route{"DeleteStorage", http.MethodDelete, "/storage/{id}", deleteValue, chain(LogMw, IdMw)},
-
 	Route{"GetKeys", http.MethodGet, "/storage/", getKeys, chain(LogMw)},
+
+	Route{"PostSecret", http.MethodPost, "/secret/", saveSecret, chain(LogMw, BodyMw)},
+	Route{"PutSecret", http.MethodPut, "/secret/", saveSecret, chain(LogMw, BodyMw)},
+	Route{"GetSsecret", http.MethodGet, "/secret/{id}", getSecret, chain(LogMw, IdMw)},
+	Route{"DeleteSecret", http.MethodDelete, "/secret/{id}", deleteSecret, chain(LogMw, IdMw)},
+	Route{"GetKeys", http.MethodGet, "/secret/", getSecretKeys, chain(LogMw)},
 
 	Route{"PostEnvironmentParam", http.MethodPost, "/envparam/", saveEnvironmentParam, chain(LogMw, BodyMw)},
 	Route{"PutEnvironmentParam", http.MethodPut, "/envparam/", saveEnvironmentParam, chain(LogMw, BodyMw)},

@@ -1,6 +1,8 @@
 package consul
 
 import (
+	"strings"
+
 	cApi "github.com/hashicorp/consul/api"
 )
 
@@ -79,15 +81,17 @@ func (r ConsulStorage) Keys() ([]string, error) {
 	return strs, nil
 }
 
-func (r ConsulStorage) Clean() error {
+func (r ConsulStorage) Clean(prefix string) error {
 	keys, err := r.Keys()
 	if err != nil {
 		return err
 	}
 	for _, v := range keys {
-		_, err := r.Delete(v)
-		if err != nil {
-			return err
+		if strings.HasPrefix(v, prefix) {
+			_, err := r.Delete(v)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil

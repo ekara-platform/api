@@ -8,16 +8,16 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ekara-platform/api/storage"
+	"github.com/ekara-platform/api/secret"
 	"github.com/stretchr/testify/assert"
 )
 
 //************************************************
-// EMPTY STORAGE WITHOUT ANY KEYS - START
+// EMPTY SECRET WITHOUT ANY KEYS - START
 //************************************************
-func TestGetNoContent(t *testing.T) {
-	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean(storage.STORAGE_PREFIX)
+func TestGetSecretNoContent(t *testing.T) {
+	usedSecret = secret.GetMockSecret()
+	defer usedSecret.CleanSecrets()
 
 	application = App{}
 	application.initialize()
@@ -25,16 +25,16 @@ func TestGetNoContent(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	req, _ := http.NewRequest(http.MethodGet, "/storage/"+"dummy_id", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/secret/"+"dummy_id", nil)
 	respRecorder := executeRequest(req)
 
 	checkCode(t, http.StatusNotFound, respRecorder.Code)
 
 }
 
-func TestDeleteNoContent(t *testing.T) {
-	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean(storage.STORAGE_PREFIX)
+func TestDeleteSecretNoContent(t *testing.T) {
+	usedSecret = secret.GetMockSecret()
+	defer usedSecret.CleanSecrets()
 
 	application = App{}
 	application.initialize()
@@ -42,16 +42,16 @@ func TestDeleteNoContent(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	req, _ := http.NewRequest(http.MethodDelete, "/storage/"+"dummy_id", nil)
+	req, _ := http.NewRequest(http.MethodDelete, "/secret/"+"dummy_id", nil)
 	respRecorder := executeRequest(req)
 
 	checkCode(t, http.StatusNotFound, respRecorder.Code)
 
 }
 
-func TestGetKeysNoContent(t *testing.T) {
-	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean(storage.STORAGE_PREFIX)
+func TestGetSecretKeysNoContent(t *testing.T) {
+	usedSecret = secret.GetMockSecret()
+	defer usedSecret.CleanSecrets()
 
 	application = App{}
 	application.initialize()
@@ -59,7 +59,7 @@ func TestGetKeysNoContent(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	req, _ := http.NewRequest(http.MethodGet, "/storage/", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/secret/", nil)
 	respRecorder := executeRequest(req)
 
 	checkCode(t, http.StatusOK, respRecorder.Code)
@@ -76,16 +76,16 @@ func TestGetKeysNoContent(t *testing.T) {
 }
 
 //************************************************
-// EMPTY STORAGE WITHOUT ANY KEYS - END
+// EMPTY SECRET WITHOUT ANY KEYS - END
 //************************************************
 
-func TestSaveValue(t *testing.T) {
+func TestSaveSecretValue(t *testing.T) {
 
 	strKey := "test_key"
 	strValue := "test_value"
 
-	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean(storage.STORAGE_PREFIX)
+	usedSecret = secret.GetMockSecret()
+	defer usedSecret.CleanSecrets()
 
 	application = App{}
 	application.initialize()
@@ -101,24 +101,24 @@ func TestSaveValue(t *testing.T) {
 	jsonStr, err := json.Marshal(body)
 	assert.Nil(t, err)
 
-	req, _ := http.NewRequest(http.MethodPost, "/storage/", bytes.NewBuffer(jsonStr))
+	req, _ := http.NewRequest(http.MethodPost, "/secret/", bytes.NewBuffer(jsonStr))
 	respRecorder := executeRequest(req)
 
 	checkCode(t, http.StatusCreated, respRecorder.Code)
 
-	b, err := usedStorage.Contains(strKey)
+	b, err := usedSecret.ContainsSecret(strKey)
 	assert.Nil(t, err)
 	assert.True(t, b)
-	b, val, err := usedStorage.Get(strKey)
+	b, val, err := usedSecret.GetSecret(strKey)
 	assert.Nil(t, err)
 	assert.True(t, b)
 	assert.Equal(t, string(val), strValue)
 
 }
 
-func TestGetKeys(t *testing.T) {
-	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean(storage.STORAGE_PREFIX)
+func TestGetSecretKeys(t *testing.T) {
+	usedSecret = secret.GetMockSecret()
+	defer usedSecret.CleanSecrets()
 
 	strKey1 := "test_key1"
 	strValue1 := "test_value1"
@@ -127,9 +127,9 @@ func TestGetKeys(t *testing.T) {
 	strKey3 := "test_key3"
 	strValue3 := "test_value3"
 
-	usedStorage.StoreString(strKey1, strValue1)
-	usedStorage.StoreString(strKey2, strValue2)
-	usedStorage.StoreString(strKey3, strValue3)
+	usedSecret.StoreSecretString(strKey1, strValue1)
+	usedSecret.StoreSecretString(strKey2, strValue2)
+	usedSecret.StoreSecretString(strKey3, strValue3)
 
 	application = App{}
 	application.initialize()
@@ -137,7 +137,7 @@ func TestGetKeys(t *testing.T) {
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
 
-	req, _ := http.NewRequest(http.MethodGet, "/storage/", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/secret/", nil)
 	respRecorder := executeRequest(req)
 
 	checkCode(t, http.StatusOK, respRecorder.Code)
@@ -153,14 +153,14 @@ func TestGetKeys(t *testing.T) {
 	assert.Contains(t, keys, strKey1, strKey2, strKey3)
 }
 
-func TestGetValue(t *testing.T) {
+func TestGetSecretValue(t *testing.T) {
 
 	strKey := "test_key"
 	strValue := "test_value"
 
-	usedStorage = storage.GetMockStorage()
-	usedStorage.StoreString(strKey, strValue)
-	defer usedStorage.Clean(storage.STORAGE_PREFIX)
+	usedSecret = secret.GetMockSecret()
+	usedSecret.StoreSecretString(strKey, strValue)
+	defer usedSecret.CleanSecrets()
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -168,7 +168,7 @@ func TestGetValue(t *testing.T) {
 	application = App{}
 	application.initialize()
 
-	req, _ := http.NewRequest(http.MethodGet, "/storage/"+strKey, nil)
+	req, _ := http.NewRequest(http.MethodGet, "/secret/"+strKey, nil)
 	respRecorder := executeRequest(req)
 
 	checkCode(t, http.StatusOK, respRecorder.Code)
@@ -181,14 +181,14 @@ func TestGetValue(t *testing.T) {
 
 }
 
-func TestDeleteValue(t *testing.T) {
+func TestDeleteSecretValue(t *testing.T) {
 
 	strKey := "test_key"
 	strValue := "test_value"
 
-	usedStorage = storage.GetMockStorage()
-	usedStorage.StoreString(strKey, strValue)
-	defer usedStorage.Clean(storage.STORAGE_PREFIX)
+	usedSecret = secret.GetMockSecret()
+	usedSecret.StoreSecretString(strKey, strValue)
+	defer usedSecret.CleanSecrets()
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -196,11 +196,11 @@ func TestDeleteValue(t *testing.T) {
 	application = App{}
 	application.initialize()
 
-	req, _ := http.NewRequest(http.MethodDelete, "/storage/"+strKey, nil)
+	req, _ := http.NewRequest(http.MethodDelete, "/secret/"+strKey, nil)
 	respRecorder := executeRequest(req)
 	checkCode(t, http.StatusOK, respRecorder.Code)
 
-	b, err := usedStorage.Contains(strKey)
+	b, err := usedSecret.ContainsSecret(strKey)
 
 	assert.Nil(t, err)
 	assert.False(t, b)

@@ -13,7 +13,7 @@ func TestGetInfo(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
 	// TODO HERE ADD THE REAL STUFF WHICH IS SUPPOSED TO BE RETURNED
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)

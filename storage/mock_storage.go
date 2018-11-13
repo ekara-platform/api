@@ -80,7 +80,7 @@ func (ms *mockStorage) Keys() ([]string, error) {
 	return r, nil
 }
 
-func (ms *mockStorage) Clean() error {
+func (ms *mockStorage) Clean(prefix string) error {
 	keys, err := ms.Keys()
 	if err != nil {
 		return err

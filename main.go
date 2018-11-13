@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ekara-platform/api/secret"
 	"github.com/ekara-platform/api/storage"
 	"github.com/gorilla/mux"
 )
@@ -19,6 +20,7 @@ var (
 	sPort       string
 	logger      log.Logger
 	usedStorage storage.Storage
+	usedSecret  secret.Secret
 )
 
 func StartApi(log log.Logger, fScript bool, fTime bool, fPort string) {
@@ -61,7 +63,8 @@ func (a *App) initialize() {
 
 // Starts the application
 func (a *App) run() {
-	usedStorage = storage.GetConsulStorage()
+	usedStorage = storage.GetStorage()
+	usedSecret = secret.GetSecret()
 	logger.Printf(API_RUNNING_ON, a.Port)
 	logger.Fatal(http.ListenAndServe(a.Port, a.Router))
 }

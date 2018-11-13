@@ -17,7 +17,7 @@ import (
 func TestGetNoParam(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -34,7 +34,7 @@ func TestGetNoParam(t *testing.T) {
 func TestDeleteNoParam(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -57,7 +57,7 @@ func TestSaveParam(t *testing.T) {
 	strContent := "Dummy params content"
 
 	usedStorage = storage.GetMockStorage()
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -87,7 +87,7 @@ func TestGetParam(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
 	usedStorage.StoreString(storage.KEY_STORE_ENV_PARAM, strContent)
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)
@@ -109,7 +109,7 @@ func TestDeleteParam(t *testing.T) {
 
 	usedStorage = storage.GetMockStorage()
 	usedStorage.StoreString(storage.KEY_STORE_ENV_PARAM, strContent)
-	defer usedStorage.Clean()
+	defer usedStorage.Clean(storage.STORAGE_PREFIX)
 
 	logger = *log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	initLog(false, false)

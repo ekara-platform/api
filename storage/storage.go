@@ -7,17 +7,18 @@ import (
 )
 
 const (
-	EKARA_PREFIX string = "ekara_"
+	STORAGE_PREFIX string = "storage_"
+	EKARA_PREFIX   string = "ekara_"
 
-	KEY_STORE_ENV_LOCATION    string = EKARA_PREFIX + "environment_location"
-	KEY_STORE_ENV_YAML        string = EKARA_PREFIX + "environment_yaml_content"
-	KEY_STORE_ENV_JSON        string = EKARA_PREFIX + "environment_json_content"
-	KEY_STORE_ENV_CREATED_AT  string = EKARA_PREFIX + "environment_created_at"
-	KEY_STORE_ENV_UPDATED_AT  string = EKARA_PREFIX + "environment_updated_at"
-	KEY_STORE_ENV_PARAM       string = EKARA_PREFIX + "environment_param_content"
-	KEY_STORE_ENV_SESSION     string = EKARA_PREFIX + "environment_session_content"
-	KEY_STORE_ENV_SSH_PRIVATE string = EKARA_PREFIX + "environment_ssh_private"
-	KEY_STORE_ENV_SSH_PUBLIC  string = EKARA_PREFIX + "environment_ssh_public"
+	KEY_STORE_ENV_LOCATION    string = STORAGE_PREFIX + EKARA_PREFIX + "environment_location"
+	KEY_STORE_ENV_YAML        string = STORAGE_PREFIX + EKARA_PREFIX + "environment_yaml_content"
+	KEY_STORE_ENV_JSON        string = STORAGE_PREFIX + EKARA_PREFIX + "environment_json_content"
+	KEY_STORE_ENV_CREATED_AT  string = STORAGE_PREFIX + EKARA_PREFIX + "environment_created_at"
+	KEY_STORE_ENV_UPDATED_AT  string = STORAGE_PREFIX + EKARA_PREFIX + "environment_updated_at"
+	KEY_STORE_ENV_PARAM       string = STORAGE_PREFIX + EKARA_PREFIX + "environment_param_content"
+	KEY_STORE_ENV_SESSION     string = STORAGE_PREFIX + EKARA_PREFIX + "environment_session_content"
+	KEY_STORE_ENV_SSH_PRIVATE string = STORAGE_PREFIX + EKARA_PREFIX + "environment_ssh_private"
+	KEY_STORE_ENV_SSH_PUBLIC  string = STORAGE_PREFIX + EKARA_PREFIX + "environment_ssh_public"
 )
 
 func RemoveEkaraPrefix(s string) string {
@@ -35,10 +36,10 @@ type Storage interface {
 	Contains(key string) (bool, error)
 	Delete(key string) (bool, error)
 	Keys() ([]string, error)
-	Clean() error
+	Clean(prefix string) error
 }
 
-func GetConsulStorage() Storage {
+func GetStorage() Storage {
 	s, err := consul.Storage()
 	if err != nil {
 		panic(err)
