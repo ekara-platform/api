@@ -1,0 +1,20 @@
+# LICENSE
+LICENSE
+
+# DOC
+*.md
+
+# GO 
+/go/vendor
+/go/*.go
+/go/*.lock
+/go/*.toml
+
+# GIT
+.gitignore
+
+# TRAVIS
+travis.yml
+
+*.sh
+**/*.exe

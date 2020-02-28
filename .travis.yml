@@ -1,14 +1,20 @@
 language: go
-go: "1.10"
+go: "1.13"
+
+services:
+  - docker
 
 env:
-  - DEP_VERSION="0.4.1"
+  global:
+    - COMMIT=${TRAVIS_COMMIT::8}
+    - IMAGE=api
 
-before_install:
-  # Download the binary to bin folder in $GOPATH
-  - curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
-  # Make the binary executable
-  - chmod +x $GOPATH/bin/dep
+script: 
+  - docker run --rm -v "$PWD":/go/src/api -w /go/src/api golang:1.13-alpine go build -o api
+  - docker build -f Dockerfile -t $IMAGE:$COMMIT ./
 
-install:
-  - dep ensure
+deploy:
+  provider: script  
+  script: bash deploy.sh
+  on:
+    all_branches: true
